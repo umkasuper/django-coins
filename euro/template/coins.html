@@ -1,21 +1,22 @@
 </body>
-</html>
+<html>
 <body>
-<p>You searched for: <strong>{{ query }}</strong></p>
 
+{% if country %}
+    <form>
+    <p>
+        Выберите страну
+        <select name="country">
+        {%  for region in country %}
+            <option> {{ region.name }}</option>
+        {% endfor %}
+        </select>
+    <input type="submit" value="Ok">
+    </p>
+    </form>
+{% endif %}
 
-<form>
-<p>
-    Выберите страну
-    <select name="country">
-    {%  for region in country %}
-        <option> {{ region.name }}</option>
-    {% endfor %}
-    </select>
-<input type="submit" value="Ok">
-</p>
-</form>
-
+<p>Показана страна: <strong>{{ query }}</strong></p>
 {% if coins %}
     <table style="width: 607px">
         <tr>
