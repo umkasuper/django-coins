@@ -3,15 +3,17 @@
 <body>
 <p>You searched for: <strong>{{ query }}</strong></p>
 
+
 <form>
-<p><select name="country">
-    <option>Австрия</option>
-    <option>Италия</option>
-    <option>Франция</option>
-    <option>Ватикан</option>
-    <option>Испания</option>
-</select>
- <input type="submit" value="Отправить"></p>
+<p>
+    Выберите страну
+    <select name="country">
+    {%  for region in country %}
+        <option> {{ region.name }}</option>
+    {% endfor %}
+    </select>
+<input type="submit" value="Ok">
+</p>
 </form>
 
 {% if coins %}
