@@ -3,6 +3,17 @@
 <body>
 <p>You searched for: <strong>{{ query }}</strong></p>
 
+<form>
+<p><select name="country">
+    <option>Австрия</option>
+    <option>Италия</option>
+    <option>Франция</option>
+    <option>Ватикан</option>
+    <option>Испания</option>
+</select>
+ <input type="submit" value="Отправить"></p>
+</form>
+
 {% if coins %}
     <table style="width: 607px">
         <tr>
