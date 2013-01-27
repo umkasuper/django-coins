@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Django settings for coins project.
 
 DEBUG = True
@@ -12,7 +13,8 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '/home/maksim/Work/django-project/coins/coins/coins/coins.db',                      # Or path to database file if using sqlite3.
+#        'NAME': '/home/maksim/Work/django-project/coins/coins/coins/coins.db',                      # Or path to database file if using sqlite3.
+	'NAME': '/Users/maksimkolesnikov/Developer/django-coins/coins/coins.db',
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -45,7 +47,8 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = '/home/maksim/Work/django-project/coins/coins/'
+#MEDIA_ROOT = '/home/maksim/Work/django-project/coins/coins/'
+MEDIA_ROOT = '/Users/maksimkolesnikov/Developer/django-coins/img'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -106,7 +109,8 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    '/home/maksim/Work/django-project/coins/coins/euro/template',
+#    '/home/maksim/Work/django-project/coins/coins/euro/template',
+     '/Users/maksimkolesnikov/Developer/django-coins/euro/template',
 )
 
 INSTALLED_APPS = (
@@ -151,3 +155,5 @@ LOGGING = {
         },
     }
 }
+
+LOGIN_REDIRECT_URL=u'/coins/?country=Италия'
