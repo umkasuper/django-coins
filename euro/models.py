@@ -29,8 +29,6 @@ class Coins(models.Model):
     country = models.ForeignKey(Country)
     nominal = models.ForeignKey(Nominal)
     image = models.ImageField(upload_to='img/euro')
-    ishave = models.BooleanField(default=False)
-#    discription = models.CharField(max_length=30, blank=True)
 
     def __unicode__(self):
         return u'%s - %s' % (unicode(self.country), unicode(self.nominal))
