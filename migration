@@ -1,5 +1,6 @@
 ./manage.py syncdb
 ./manage.py convert_to_south euro
+
 #./manage.py migrate myapp 0001 --fake
 
 

@@ -1,6 +1,7 @@
 # ~*~ coding: utf-8 ~*~
 
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -46,8 +47,9 @@ class Country(models.Model):
 class Coins(models.Model):
     country = models.ForeignKey(Country)
     nominal = models.ForeignKey(Nominal)
-    image = models.ImageField(upload_to='img/euro')
-    coin_group = models.ManyToManyField(CoinGroup)
+    image = models.ImageField(upload_to='img/euro') # где лежат фотографии монет
+    coin_group = models.ManyToManyField(CoinGroup)  # группа к которой относиться монета
+    coin_owner = models.ManyToManyField(User)  # кто владеет монетой
 
     def __unicode__(self):
         return u'%s - %s' % (unicode(self.country), unicode(self.nominal))
