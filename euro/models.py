@@ -19,7 +19,7 @@ class Nominal(models.Model):
 
 # группировка монеток по признакам
 class CoinGroup(models.Model):
-    group_name = models.CharField(max_length=10)
+    group_name = models.CharField(max_length=50)
 
     def __unicode__(self):
         return self.group_name

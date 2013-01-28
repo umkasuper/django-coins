@@ -17,7 +17,7 @@ def coins(request):
                 if coins_of_country:
                     type_of_coins = Country.objects.filter(name = request.GET['country'])[0].coin_group.all().exclude(group_name__in=['euro', 'normal'])
 
-                    # есть типы кроме euro, и стандарт
+                    # есть типы кроме euro, и стандарт (есть ли другие выпуски?)
                     if type_of_coins:
                         coins = coins_of_country.filter(coin_group__group_name__in=type_of_coins.values_list('group_name', flat=True)).order_by('coin_group', 'nominal')
                     else:
