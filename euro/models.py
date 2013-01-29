@@ -33,7 +33,7 @@ class CoinGroup(models.Model):
 # описание страны в которой находиться монетка
 class Country(models.Model):
     name = models.CharField(max_length=30)
-    coin_group = models.ManyToManyField(CoinGroup)
+    coin_group = models.ManyToManyField(CoinGroup, blank=True)
 
     class Meta:
         verbose_name = u'Страны'
@@ -48,8 +48,8 @@ class Coins(models.Model):
     country = models.ForeignKey(Country)
     nominal = models.ForeignKey(Nominal)
     image = models.ImageField(upload_to='img/euro') # где лежат фотографии монет
-    coin_group = models.ManyToManyField(CoinGroup)  # группа к которой относиться монета
-    coin_owner = models.ManyToManyField(User)  # кто владеет монетой
+    coin_group = models.ManyToManyField(CoinGroup, blank=True)  # группа к которой относиться монета
+    coin_owner = models.ManyToManyField(User, blank=True)  # кто владеет монетой
 
     def __unicode__(self):
         return u'%s - %s' % (unicode(self.country), unicode(self.nominal))
