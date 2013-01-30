@@ -47,7 +47,7 @@ class Country(models.Model):
 class Coins(models.Model):
     country = models.ForeignKey(Country)
     nominal = models.ForeignKey(Nominal)
-    image = models.ImageField(upload_to='img/euro') # где лежат фотографии монет
+    image = models.ImageField(upload_to='euro') # где лежат фотографии монет
     coin_group = models.ManyToManyField(CoinGroup, blank=True)  # группа к которой относиться монета
     coin_owner = models.ManyToManyField(User, blank=True)  # кто владеет монетой
 

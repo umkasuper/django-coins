@@ -6,15 +6,27 @@ from euro.models import Country, Nominal, Coins, CoinGroup
 
 
 class CoinsForm(forms.ModelForm):
-    coin_group = forms.ModelMultipleChoiceField(queryset=CoinGroup.objects.all())
+    coin_group = forms.ModelMultipleChoiceField(queryset = CoinGroup.objects.all())
 
     class Meta:
         model = Coins
 
     def __init__(self, *args, **kwargs):
-	coin = kwargs['instance']
-        super(CoinsForm, self).__init__(*args, **kwargs)
-        self.fields['coin_group'].queryset = Country.objects.filter(name = unicode(coin.country))[0].coin_group.all()
+        print "Error __init__ 1"
+	try:
+	    coin = kwargs['instance']
+	except:
+    	    super(CoinsForm, self).__init__(*args, **kwargs)
+    	    return
+
+	super(CoinsForm, self).__init__(*args, **kwargs)
+
+	try:
+	    print "Error __init__ 2"
+            self.fields['coin_group'].queryset = Country.objects.filter(name = unicode(coin.country))[0].coin_group.all()
+        except:
+	    print "Error __init__ 3"
+    	    self.fields['coin_group'].queryset = CoinGroup.objects.all()
         
 class CoinsCounrty(admin.ModelAdmin):
     ordering = ('name',)
