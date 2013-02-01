@@ -1,11 +1,65 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 <meta http-equiv="Content-Language" content="ru"/>
+<script type="text/javascript"  language="Javascript" src="http://code.jquery.com/jquery.js"> </script>
 </head>
 
+<style type="text/css">
+    .cell_coins {
+        height: 130px;
+        width: 130px;
+        vertical-align: top;
+        text-align: center;
+    }
+
+    .link {
+/*        display: block; /* Ссылка как блочный элемент */ */
+        padding: 5px; /* Поля вокруг надписи */
+        text-decoration: none; /* Подчеркивание у ссылок убираем */
+        color: #666; /* Цвет текста */
+/*        border: 1px solid #ccc;/* Рамка вокруг пунктов меню */ */
+        background-color: #f0f0f0; /* Цвет фона */
+        border-bottom: 1px solid #ccc; /* Границу снизу не проводим */
+    }
+
+    .link:link {
+        color: #0000d0;
+    }
+    .link:hover {
+        color: #ffe; /* Цвет текста активного пункта */
+        background-color: #5488af; /* Цвет фона активного пункта */
+        cursor: pointer;
+    }
+    .link:active, .link:focus {
+        text-decoration: none;
+    }
+
+</style>
+
 <body>
+
+<script type="text/javascript" language="Javascript">
+    function onClinkHref()
+    {
+        var commands = window.event.target.id.split("_");
+        var command = commands[0];
+        var id = commands[1];
+
+        // все показываем
+        $("[id*='_absent']").show();
+        $("[id*='_present']").show();
+
+        // отключаем те которые отсутствуют
+        if (command == 'show')
+            $("[id*=" + id + "_absent]").hide();
+
+        // отключаем те которые имеются
+        if (command == 'hide')
+            $("[id*=" + id +"_present]").hide();
+    }
+</script>
 
 {% load user_coin %}
 
@@ -23,25 +77,53 @@
     </form>
 {% endif %}
 
+{% if grouped_country %}
 
-<p>Показана страна: <strong>{{ query }}</strong></p>
-{% if coins_group %}
-    {%  for group in coins_group %}
-        <p> <strong>{{ group.coins_group_name }}</strong></p>
-        <table style="width: 607px">
-            <tr>
-                {% for coin in group.coins_group %}
-                    {% if forloop.counter0|divisibleby:"4" %}<tr>{% endif %}
-                    <td style="height: 100px; width: 100px;">
-                        {{ coin.nominal }} - {{ request.user|user_have_coin:coin }} <br />
-                        <img src="{{ coin.image.url }}" width="100" height="100" />
-                    </td>
-                    {% if forloop.last or forloop.counter|divisibleby:"4" %}</tr>{% endif %}
-                {% endfor %}
-            </tr>
-        </table>
+    {% for country in grouped_country %}
+        {% if forloop.revcounter0 >= 1 %}
+            <p>
+                <a>показать </a><a class="link" id="show_" onClick="onClinkHref()">имеющиеся</a>
+                <a>,показать </a><a class="link" id="hide_" onClick="onClinkHref()">отсутсвующие </a>
+                <a>,показать </a><a class="link"  id="all_" onClick="onClinkHref()">все</a>
+            </p>
+
+        {% endif %}
+        <p>
+            Показана страна: <strong>{{ country.country_name }}</strong>
+            {% if country.coins_group %}
+                <a>показать </a><a class="link" id="show_{{ country.country_name }}" onClick="onClinkHref()">имеющиеся</a>
+                <a>,показать </a><a class="link" id="hide_{{ country.country_name }}" onClick="onClinkHref()">отсутсвующие </a>
+                <a>,показать </a><a class="link"  id="all_{{ country.country_name }}" onClick="onClinkHref()">все</a>
+            {% endif %}
+        </p>
+
+        {% if country.coins_group %}
+            {%  for group in country.coins_group %}
+                {% if  group.coins_group_name %}
+                    <p> <strong>{{ group.coins_group_name }}</strong></p>
+                {%  endif %}
+                <table style="width: 607px">
+                    <tr>
+                        {% for coin in group.coins_group %}
+                            {% if forloop.counter0|divisibleby:"4" %}<tr>{% endif %}
+                                <td class="cell_coins">
+                                    {% if request.user|user_have_coin:coin %}
+                                        <a style="vertical-align: top; text-align: center" id="{{ country.country_name }}_present">{{ coin.nominal }}</a> </br>
+                                        <img id="{{ country.country_name }}_present" src="{{ coin.image.url }}" width="100" height="100" />
+                                    {% else %}
+                                        <a style="vertical-align: top; text-align: center" id="{{ country.country_name }}_absent">{{ coin.nominal }}</a> </br>
+                                        <img id="{{ country.country_name }}_absent" src="{{ coin.image.url }}" width="100" height="100" />
+                                    {% endif %}
+                                </td>
+                            {% if forloop.last or forloop.counter|divisibleby:"4" %}</tr>{% endif %}
+                        {% endfor %}
+                    </tr>
+                </table>
+            {% endfor %}
+        {% else %}
+            <p>Монеты страны {{ country.country_name }} не существуют</p>
+        {% endif %}
     {% endfor %}
-
 {% endif %}
 
 </body>
