@@ -2,8 +2,7 @@
 
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
-from euro.models import Coins
-from euro.models import Country
+from euro.models import Coins, Country
 
 class countryCoins():
     coins_group = []
