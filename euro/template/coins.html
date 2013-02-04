@@ -91,6 +91,7 @@
                                         {% for coin in group.coins_group %}
                                             {% if forloop.counter0|divisibleby:"4" %}<tr>{% endif %}
                                             <td class="cell_coins">
+                                                {% comment %}
                                                 {% if request.user|user_have_coin:coin %}
                                                     <a style="vertical-align: top; text-align: center" id="{{ country.country_name }}_present">{{ coin.nominal }}</a> </br>
                                                     <img id="{{ country.country_name }}_present" src="{{ coin.image.url }}" width="100" height="100" />
@@ -98,6 +99,14 @@
                                                     <a style="vertical-align: top; text-align: center" id="{{ country.country_name }}_absent">{{ coin.nominal }}</a> </br>
                                                     <img id="{{ country.country_name }}_absent" src="{{ coin.image.url }}" width="100" height="100" />
                                                 {% endif %}
+                                                {% endcomment %}
+                                                <div style="position:relative;" id="{{ country.country_name }}_present">
+                                                    <div class=tdcontent>
+                                                        {{  coin.nominal }}
+                                                    </div>
+                                                    <img src="{{ coin.image.url }}" width="100" height="100" />
+
+                                                </div>
                                             </td>
                                             {% if forloop.last or forloop.counter|divisibleby:"4" %}</tr>{% endif %}
                                         {% endfor %}
