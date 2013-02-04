@@ -1,0 +1,81 @@
+
+body, html {
+	margin:0px;
+	padding:0px;
+//	text-align:center;
+}
+
+#doc-body {
+	background-color: #FFC;
+}
+
+#main-block {
+	background-color: #FC9;
+	width: 1000px;
+	margin:0 auto;
+	text-align:center;
+}
+
+#header {
+	background-color: #F60;
+	text-align:left;
+}
+
+#block-info {
+	width:1000px;
+	margin:0 auto;
+}
+#left_side {
+	float: left;
+	width: 200px;
+	min-width: 200px;
+	background-color:#3F0;
+    text-align:left;
+}
+#footer {
+	background-color: #6C0;
+	position: relative;
+	clear: both;
+}
+
+#info {
+	//background-color: #63C;
+	margin-left:202px;
+    text-align:left;
+	//float: left;
+}
+#navigation {
+}
+
+.cell_coins {
+    height: 130px;
+    width: 130px;
+    vertical-align: top;
+    text-align: center;
+}
+
+.link {
+    /*        display: block; /* Ссылка как блочный элемент */
+    padding: 1px; /* Поля вокруг надписи */
+    text-decoration: none; /* Подчеркивание у ссылок убираем */
+    color: #666; /* Цвет текста */
+    /*        border: 1px solid #ccc;/* Рамка вокруг пунктов меню */
+    //background-color: #f0f0f0; /* Цвет фона */
+    border-bottom: 1px solid #ccc; /* Границу снизу не проводим */
+}
+
+.link:link {
+    color: #0000d0;
+}
+
+.link:hover {
+    color: #ffe; /* Цвет текста активного пункта */
+    background-color: #5488af; /* Цвет фона активного пункта */
+    cursor: pointer;
+}
+
+.link:active, .link:focus {
+    text-decoration: none;
+}
+
+
