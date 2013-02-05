@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Language" content="ru"/>
+    <script type="text/javascript"  language="Javascript" src="http://code.jquery.com/jquery.js"> </script>
+    <link rel="stylesheet" type="text/css" href= "/media/css/base.css" />
+    <title> {% block title %}Евро коллекция{% endblock %}</title>
+</head>
+
+<body id="doc-body">
+
+<script type="text/javascript" language="Javascript">
+    function onClinkHref()
+    {
+        var commands = window.event.target.id.split("_");
+        var command = commands[0];
+        var id = commands[1];
+
+        // все показываем
+        $("[id*='_absent']").show();
+        $("[id*='_present']").show();
+
+        // отключаем те которые отсутствуют
+        if (command == 'show')
+            $("[id*=" + id + "_absent]").hide();
+
+        // отключаем те которые имеются
+        if (command == 'hide')
+            $("[id*=" + id +"_present]").hide();
+    }
+</script>
+
+<div id="main-block"> <!-- начало главного блока -->
+
+    <header id="header">
+        Это заголовок
+    </header>
+
+    <nav id="navigation">
+        <a href="/euro/?country=all">Евро союз</a>
+        <a href="/russia/?type=all">Россия</a>
+        <a href="/usa/?type=all">США</a>
+    </nav>
+
+    <div id="block-info"> <!-- тут содержиться и меню и информация -->
+
+        {# начало рендеринга меню #}
+        <div id="left_side">
+            {% block left_side %}
+            {% endblock %}
+        </div>
+        {# конец рендеринга меню #}
+
+        {# начало рендеринга информации #}
+        <article id="info">
+
+            {% block info %}
+            {% endblock %}
+
+        </article>
+        {# конец рендеринга информации #}
+
+    </div>
+
+
+    <footer id="footer"> <!-- начало описания подвала -->
+        Это подвал
+    </footer>
+
+</div> <!-- конец главного блока -->
+
+</body>
+</html>
+
+

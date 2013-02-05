@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% load user_coin %}
+
+{% block left_side %}
+    {% if country_descriptions %}
+        <ul class="nav">
+            <li><a href="/euro/?country=all">Все страны</a>
+                {% for description in country_descriptions %}
+                    <li><a href="/euro/?country={{ description.country_name }}">{{ description.country_name }} </a>
+
+                        {% if description.coins_group %}
+                            <ul>
+                                {% for group_description in description.coins_group %}
+                                    <li><a href="/euro/?country={{ description.country_name }}&type={{ group_description.coins_group_name }}">{{ group_description.coins_group_name }}</a></li>
+                                {% endfor %}
+                            </ul>
+
+                            </li>
+                        {% else %}
+                            </li>
+                        {% endif %}
+
+                {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}
+
+{% block info %}
+    {% if grouped_country %}
+        {% if grouped_country|length > 1 %}
+            <p>
+                <a>Показать </a><a class="link" id="show_" onClick="onClinkHref()">имеющиеся,</a>
+                <a> показать </a><a class="link" id="hide_" onClick="onClinkHref()">отсутсвующие,</a>
+                <a> показать </a><a class="link"  id="all_" onClick="onClinkHref()">все</a>
+            </p>
+
+        {% endif %}
+
+        {% for country in grouped_country %}
+            <p>
+                Страна: <strong>{{ country.country_name }}</strong>
+                {% if country.coins_group %}
+                    <a>показать </a><a class="link" id="show_{{ country.country_name }}" onClick="onClinkHref()">имеющиеся,</a>
+                    <a> показать </a><a class="link" id="hide_{{ country.country_name }}" onClick="onClinkHref()">отсутсвующие,</a>
+                    <a> показать </a><a class="link" id="all_{{ country.country_name }}" onClick="onClinkHref()">все</a>
+                {% endif %}
+            </p>
+
+            {% if country.coins_group %}
+                {%  for group in country.coins_group %}
+                    {% if  group.coins_group_name %}
+                        <p> <strong>{{ group.coins_group_name }}</strong></p>
+                    {%  endif %}
+                    <table style="width: 607px">
+                        <tr>
+                            {% for coin in group.coins_group %}
+                                {% if forloop.counter0|divisibleby:"4" %}<tr>{% endif %}
+                                <td class="cell_coins">
+                                    {% if request.user|user_have_coin:coin %}
+                                        <div style="position:relative;" id="{{ country.country_name }}_present">
+                                    {% else %}
+                                        <div style="position:relative;" id="{{ country.country_name }}_absent">
+                                    {% endif %}
+                                    <div class=nominal>
+                                        {{ coin.nominal }}
+                                    </div>
+                                    <img src="{{ coin.image.url }}" width="100" height="100" />
+
+                                    </div>
+                                </td>
+                                {% if forloop.last or forloop.counter|divisibleby:"4" %}</tr>{% endif %}
+                            {% endfor %}
+                        </tr>
+                    </table>
+                {% endfor %}
+            {% else %}
+                <p>Монеты страны {{ country.country_name }} не существуют</p>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endblock %}
