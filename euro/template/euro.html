@@ -7,47 +7,58 @@
 {% endblock %}
 
 {% block left_side %}
+    <div id="left_side">
+
     {% if country_descriptions %}
         <ul class="nav">
-            <li><a href="/euro/?country=all">Все страны</a>
-                {% for description in country_descriptions %}
-                    <li><a href="/euro/?country={{ description.country_name }}">{{ description.country_name }} </a>
+            <li><a href="/euro/?country=all">Регулярный чекан</a> </li>
+            <ul>
+{#                  <li><a href="/euro/?country=all">Все страны</a> </li>#}
+                    {% for description in country_descriptions %}
+                        <li><a href="/euro/?country={{ description.country_name }}">{{ description.country_name }} </a>
 
-                        {% if description.coins_group %}
-                            <ul>
-                                {% for group_description in description.coins_group %}
-                                    <li><a href="/euro/?country={{ description.country_name }}&type={{ group_description.coins_group_name }}">{{ group_description.coins_group_name }}</a></li>
-                                {% endfor %}
-                            </ul>
+                            {% if description.coins_group %}
+                                <ul>
+                                    {% for group_description in description.coins_group %}
+                                        <li><a href="/euro/?country={{ description.country_name }}&type={{ group_description.coins_group_name }}">{{ group_description.coins_group_name }}</a></li>
+                                    {% endfor %}
+                                </ul>
 
-                            </li>
-                        {% else %}
-                            </li>
-                        {% endif %}
-
-                {% endfor %}
+                                </li>
+                            {% else %}
+                                </li>
+                            {% endif %}
+                    {% endfor %}
+            </ul>
+            <li><a href="/euro_memorable/?country=all">Памятные евро</a> </li>
         </ul>
     {% endif %}
+    </div>
+
 {% endblock %}
 
 {% block info %}
     {% if grouped_country %}
-        {% if grouped_country|length > 1 %}
-            <p>
-                <a>Показать </a><a class="link" id="show_" onClick="onClinkHref()">имеющиеся,</a>
-                <a> показать </a><a class="link" id="hide_" onClick="onClinkHref()">отсутсвующие,</a>
-                <a> показать </a><a class="link"  id="all_" onClick="onClinkHref()">все</a>
-            </p>
+        {% if request.user.is_authenticated %}
+            {% if grouped_country|length > 1 %}
+                <p>
+                    <a>Показать </a><a class="link" id="show_" onClick="onClinkHref()">имеющиеся,</a>
+                    <a> показать </a><a class="link" id="hide_" onClick="onClinkHref()">отсутсвующие,</a>
+                    <a> показать </a><a class="link"  id="all_" onClick="onClinkHref()">все</a>
+                </p>
 
+            {% endif %}
         {% endif %}
 
         {% for country in grouped_country %}
             <p>
                 Страна: <strong>{{ country.country_name }}</strong>
-                {% if country.coins_group %}
-                    <a>показать </a><a class="link" id="show_{{ country.country_name }}" onClick="onClinkHref()">имеющиеся,</a>
-                    <a> показать </a><a class="link" id="hide_{{ country.country_name }}" onClick="onClinkHref()">отсутсвующие,</a>
-                    <a> показать </a><a class="link" id="all_{{ country.country_name }}" onClick="onClinkHref()">все</a>
+                {% if request.user.is_authenticated %}
+                    {% if country.coins_group %}
+                        <a>показать </a><a class="link" id="show_{{ country.country_name }}" onClick="onClinkHref()">имеющиеся,</a>
+                        <a> показать </a><a class="link" id="hide_{{ country.country_name }}" onClick="onClinkHref()">отсутсвующие,</a>
+                        <a> показать </a><a class="link" id="all_{{ country.country_name }}" onClick="onClinkHref()">все</a>
+                    {% endif %}
                 {% endif %}
             </p>
 
@@ -58,19 +69,28 @@
                     {%  endif %}
                     <table style="width: 607px">
                         <tr>
+                            {# бежим по всем группам монент #}
                             {% for coin in group.coins_group %}
+                                {# делим их по четыре в ряд #}
                                 {% if forloop.counter0|divisibleby:"4" %}<tr>{% endif %}
                                 <td class="cell_coins">
-                                    {% if request.user|user_have_coin:coin %}
-                                        <div style="position:relative;" id="{{ country.country_name }}_present">
+                                    {# если пользователь авторизован, то будем ему позволять наблюдать за монетами #}
+                                    {% if request.user.is_authenticated %}
+                                        {% if request.user|user_have_coin:coin %}
+                                            <div style="position:relative;" id="{{ country.country_name }}_present">
+                                            <div class="present" id="{{ country.country_name }}_absent">
+                                                <img src="/media/check.png"  />
+                                            </div>
+                                        {% else %}
+                                            <div style="position:relative;" id="{{ country.country_name }}_absent">
+                                        {% endif %}
                                     {% else %}
                                         <div style="position:relative;" id="{{ country.country_name }}_absent">
                                     {% endif %}
                                     <div class=nominal>
                                         {{ coin.nominal }}
                                     </div>
-                                    <img src="{{ coin.image.url }}" width="100" height="100" />
-
+                                        <img src="{{ coin.image.url }}" width="100" height="100" />
                                     </div>
                                 </td>
                                 {% if forloop.last or forloop.counter|divisibleby:"4" %}</tr>{% endif %}

@@ -85,4 +85,10 @@ body, html {
     z-index: 5;
 }
 
+.present {
+    position:absolute;
+    margin-left: 20px;
+    margin-top: 0px;
+    z-index: 5;
+}
 

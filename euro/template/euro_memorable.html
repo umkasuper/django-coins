@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% load user_coin %}
+
+{% block title %}
+    Евро монеты
+{% endblock %}
+
+{% block left_side %}
+    <div id="left_side">
+
+    {% if country_descriptions %}
+        <ul class="nav">
+            <li><a href="/euro/?country=all">Регулярный чекан</a> </li>
+            <li><a href="/euro_memorable/?country=all">Памятные евро</a> </li>
+            <ul>
+                <li><a href="/euro_memorable/?country=all">Все страны</a> </li>
+                {% for description in country_descriptions %}
+                    <li><a href="/euro_memorable/?country={{ description.country_name }}">{{ description.country_name }} </a> </li>
+                {% endfor %}
+            </ul>
+        </ul>
+    {% endif %}
+    </div>
+
+{% endblock %}
+
+{% block info %}
+{% endblock %}

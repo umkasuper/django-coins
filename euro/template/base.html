@@ -34,7 +34,17 @@
 <div id="main-block"> <!-- начало главного блока -->
 
     <header id="header">
-        Это заголовок
+        <div style="float: right;">
+            <a href="/accounts/logout/">Выход</a>
+        </div>
+        <div>
+        {% if request.user.is_authenticated %}
+           Привет пользователь {{ request.user.username }}
+        {% else %}
+            <a href="/accounts/login/">Вход</a>
+        {% endif %}
+        </div>
+
     </header>
 
     <nav id="navigation">
@@ -46,10 +56,10 @@
     <div id="block-info"> <!-- тут содержиться и меню и информация -->
 
         {# начало рендеринга меню #}
-        <div id="left_side">
-            {% block left_side %}
-            {% endblock %}
-        </div>
+        {% block left_side %}
+            <div id="left_side">
+            </div>
+        {% endblock %}
         {# конец рендеринга меню #}
 
         {# начало рендеринга информации #}

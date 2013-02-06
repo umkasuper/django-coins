@@ -1,13 +1,24 @@
+{% extends "base.html" %}
 
-{% block content %}
+{% block info %}
 
 {% if form.errors %}
 <p>Your username and password didn't match. Please try again.</p>
 {% endif %}
 
+<style>
+    #info {
+    //background-color: #63C;
+    margin-left:0px;
+    text-align:left;
+    //float: left;
+    }
+</style>
+
+
 <form method="post" action="{% url 'django.contrib.auth.views.login' %}">
 {% csrf_token %}
-<table>
+<table ALIGN="center">
 <tr>
     <td>{{ form.username.label_tag }}</td>
     <td>{{ form.username }}</td>
@@ -18,7 +29,7 @@
 </tr>
 </table>
 
-<input type="submit" value="login" />
+<input type="submit" value="login" style="width:100px;margin:0 auto;display:block;"/>
 <input type="hidden" name="next" value="{{ next }}" />
 </form>
 
