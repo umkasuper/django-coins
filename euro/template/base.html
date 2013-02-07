@@ -29,6 +29,11 @@
         if (command == 'hide')
             $("[id*=" + id +"_present]").hide();
     }
+
+    function onDblClickIMG(item)
+    {
+        console.log("dbl" + item[0].id);
+    }
 </script>
 
 <div id="main-block"> <!-- начало главного блока -->

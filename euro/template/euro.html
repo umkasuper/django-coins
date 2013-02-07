@@ -77,12 +77,12 @@
                                     {# если пользователь авторизован, то будем ему позволять наблюдать за монетами #}
                                     {% if request.user.is_authenticated %}
                                         {% if request.user|user_have_coin:coin %}
-                                            <div style="position:relative;" id="{{ country.country_name }}_present">
-                                            <div class="present" id="{{ country.country_name }}_absent">
-                                                <img src="/media/check.png"  />
-                                            </div>
+                                            <div style="position:relative;" id="{{ coin.id }}_{{ country.country_name }}_present">
+                                                <div class="present" id="{{ country.country_name }}_absent">
+                                                    <img src="/media/check.png"  />
+                                                </div>
                                         {% else %}
-                                            <div style="position:relative;" id="{{ country.country_name }}_absent">
+                                            <div style="position:relative;" id="{{ coin.id }}_{{ country.country_name }}_absent">
                                         {% endif %}
                                     {% else %}
                                         <div style="position:relative;" id="{{ country.country_name }}_absent">
@@ -90,8 +90,22 @@
                                     <div class=nominal>
                                         {{ coin.nominal }}
                                     </div>
-                                        <img src="{{ coin.image.url }}" width="100" height="100" />
+                                        <img id="{{ coin.id }}" src="{{ coin.image.url }}" width="100" height="100" />
                                     </div>
+{% comment %}
+                                    //var divdbl_{{ coin.id }} = $("#{{ coin.id }}");
+                                    //var divdbl = $("div:first");
+                                    //divdbl_{{ coin.id }}.dblclick(function () {
+                                    //    console.log("dbl");
+                                    //    //divdbl.toggleClass('dbl');
+                                    //});
+{% endcomment %}
+                                    <script>
+                                        var divdbl_{{ coin.id }} = $("[id*='{{ coin.id }}_{{ country.country_name }}']");
+                                        divdbl_{{ coin.id }}.dblclick(function () {
+                                            onDblClickIMG(divdbl_{{ coin.id }});
+                                        });
+                                    </script>
                                 </td>
                                 {% if forloop.last or forloop.counter|divisibleby:"4" %}</tr>{% endif %}
                             {% endfor %}
