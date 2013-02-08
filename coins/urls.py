@@ -7,6 +7,7 @@ from django.conf.urls import patterns, include, url
 from euro.views import euro, euro_memorable
 from euro.views import usa
 from euro.views import russia
+from euro.views import set_coins
 from euro.sys   import site_logout
 
 # Uncomment the next two lines to enable the admin:
@@ -20,6 +21,7 @@ urlpatterns = patterns('',
 
     url(r'^euro/$', euro),
     url(r'^euro_memorable/$', euro_memorable),
+    url(r'^set/$', set_coins),
     url(r'^usa/$', usa),
     url(r'^russia/$', russia),
     # Uncomment the admin/doc line below to enable admin documentation:

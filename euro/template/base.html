@@ -34,9 +34,15 @@
     {
         var img = $(item).find("img#check");
 
-        $(img).is(":visible") ? $(img).hide() : $(img).show();
 
-        console.log("dbl_" + item[0].id.split('_')[0]);
+        $.ajax({
+            type: "POST",
+            url: "/set/",
+            data: {id: item.id.split('_')[0], operation: $(img).is(":visible") ? "remove" : "add"}
+        }).done(function( msg ) {
+                if (msg == "ok")
+                    $(img).is(":visible") ? $(img).hide() : $(img).show();
+            });
     }
 </script>
 

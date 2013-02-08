@@ -1,12 +1,18 @@
 # -*- coding: utf-8 -*-
 
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render_to_response
 from euro.models import Coins, Country
+from django.contrib.auth.models import User
 
+"""
+Класс опимывающий выборку по страны
+"""
 class countryCoins():
-    coins_group = []
-    country_name= ""
+
+    coins_group = []   # группы монет
+    country_name= ""   # название страны
 
     def __init__(self, country_name):
         self.country_name = country_name
@@ -15,13 +21,19 @@ class countryCoins():
     def add_coin_group(self, coin_group):
         self.coins_group.append(coin_group)
 
+
+"""
+Оисание группы монент название группы (например год) и перечень монет для отображения
+"""
 class groupCoin():
 
     def __init__(self, coins_group, coins_group_name):
         self.coins_group = coins_group
         self.coins_group_name = coins_group_name
 
-
+"""
+Обработка запроса на получеие юбилейных euro монет
+"""
 def euro_memorable(request):
     if 'country' in request.GET:
         if request.GET['country'] == "all":
@@ -41,6 +53,9 @@ def euro_memorable(request):
         message = 'You submitted an empty form.'
     return HttpResponse(message)
 
+"""
+Обработка запроса для отображени euro монет
+"""
 def euro(request):
     if 'country' in request.GET:
 
@@ -87,8 +102,43 @@ def euro(request):
         message = 'You submitted an empty form.'
     return HttpResponse(message)
 
+# обработка запроса выдачи страницы монет США
 def usa(request):
     return render_to_response('usa.html',  {'request': request})
 
+"""
+Обработка запроса выдачи страницы с монетыми России
+"""
 def russia(request):
     return render_to_response('russia.html',  {'request': request})
+
+"""
+ Обработка POST запроса на запись, удаление монеты в колекцию
+ """
+@csrf_exempt
+def set_coins(request):
+    if ('id' in request.POST) and ('operation' in request.POST):
+        # получем id пользователя
+        user = User.objects.filter(username = request.user.username)
+        # нашли такого пользователя
+        if user:
+            coin = Coins.objects.filter(id = int(request.POST['id']))
+            # нашли монеты  у нужным id
+            if coin:
+                if request.POST['operation'] == "add":
+                    try:
+                        coin[0].coin_owner.add(user[0].id)
+                    except:
+                        return HttpResponse(u"bad add")
+
+                if request.POST['operation'] == "remove":
+                    try:
+                        coin[0].coin_owner.remove(user[0].id)
+                    except:
+                        return HttpResponse(u"bad remove")
+            return HttpResponse(u"ok")
+        else:
+            return HttpResponse(u"user not found")
+
+    return HttpResponse(u"need params")
+
