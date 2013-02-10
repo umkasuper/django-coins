@@ -67,6 +67,44 @@
                     {% if  group.coins_group_name %}
                         <p> <strong>{{ group.coins_group_name }}</strong></p>
                     {%  endif %}
+
+                    {% comment %}
+                    <div style="float: left;">
+                    {% if  group.coins_group_name %}
+                        <p> <strong>{{ group.coins_group_name }}</strong></p>
+                    {%  endif %}
+                    {% for coin in group.coins_group %}
+                        {% if forloop.counter0|divisibleby:"4" %}<div id="line" style="margin-top: 20px;">{% endif %}
+                            <div id="row" style="background-image:url({{ coin.image.url }});"> {# float: left; margin-left: 30px; margin-top: 30px;min-width: 100px;min-height: 100px; #}
+                            {# если пользователь авторизован, то будем ему позволять наблюдать за монетами #}
+                            {% if request.user.is_authenticated %}
+                                {% if request.user|user_have_coin:coin %}
+                                    <div style="position:relative;" id="{{ coin.id }}_{{ country.country_name }}_present">
+                                    <div class="present2" id="{{ country.country_name }}_absent">
+                                        <img style="display: block" id="check" src="/media/check.png" />
+                                    </div>
+                                {% else %}
+                                    <div style="position:relative:none;" id="{{ coin.id }}_{{ country.country_name }}_absent">
+                                    <div class="present2" id="{{ country.country_name }}_absent">
+                                        <img style="display: none" id="check" src="/media/check.png" />
+                                    </div>
+                                {% endif %}
+                            {% else %}
+                                <div style="position:relative;" id="{{ country.country_name }}_absent">
+                            {% endif %}
+                                    <div class=nominal2>
+                                        {{ coin.nominal }}
+                                    </div>
+
+                                </div>
+                            </div>
+                        {% if forloop.last or forloop.counter|divisibleby:"4" %}</div>{% endif %}
+
+                    {% endfor %}
+                    </div>
+                    {% endcomment %}
+
+
                     <table style="width: 607px">
                         <tr>
                             {# бежим по всем группам монент #}
