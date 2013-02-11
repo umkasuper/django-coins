@@ -30,18 +30,17 @@
             $("[id*=" + id +"_present]").hide();
     }
 
-    function onDblClickIMG(item)
+    function onClickIMG(item)
     {
-        var img = $(item).find("img#check");
-
+        var img = $(item).css("background-image").replace(/[\(\)']+/g,'').split('/').pop();
 
         $.ajax({
             type: "POST",
             url: "/set/",
-            data: {id: item.id.split('_')[0], operation: $(img).is(":visible") ? "remove" : "add"}
+            data: {id: item.id.split('_')[0], operation: (img == "check.png") ? "remove" : "add"}
         }).done(function( msg ) {
                 if (msg == "ok")
-                    $(img).is(":visible") ? $(img).hide() : $(img).show();
+                     (img == "check.png") ? $(item).css("background-image", "url(/media/uncheck.png)") : $(item).css("background-image", "url(/media/check.png)");
             });
     }
 </script>

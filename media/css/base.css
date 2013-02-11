@@ -51,14 +51,34 @@ body, html {
     clear:both;
 }
 
-#row {
+.row {
+    margin-left: 0px;
+    margin-top: 0px;
+    min-width: 100px;
+    min-height: 100px;
+    z-index: 5;
+}
+
+.empty_row {
     float: left;
     margin-left: 30px;
     margin-top: 0px;
+    margin-bottom: 10px;
     min-width: 100px;
     min-height: 100px;
     text-align:left;
 }
+
+#country {
+    float: left;
+    margin-bottom: 10px;
+}
+
+#group_in_country {
+    float: left;
+    margin-bottom: 0px;
+}
+
 
 .cell_coins {
     height: 130px;
@@ -100,13 +120,6 @@ body, html {
 
 .present {
     position:absolute;
-    margin-left: 10px;
-    margin-top: 0px;
-    z-index: 5;
-}
-
-.present2 {
-    position:absolute;
     margin-left: -5px;
     margin-top: 0px;
     z-index: 5;
@@ -114,7 +127,7 @@ body, html {
 
 .nominal2 {
     position:absolute;
-    margin-left: 80px;
-    margin-top: 95px;
+    margin-left: 85px;
+    margin-top: 85px;
     z-index: 5;
 }
