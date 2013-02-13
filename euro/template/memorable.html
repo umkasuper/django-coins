@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% load user_coin %}
+
+{% block title %}
+    Евро монеты
+{% endblock %}
+
+{% block left_side %}
+    <div id="left_side">
+
+    {% if country_descriptions %}
+        <ul class="nav">
+            <li><a href="/euro/?country=all">Регулярный чекан</a> </li>
+            <li><a href="/euro/memorable/all">Памятные евро</a> </li>
+            <ul>
+                {% for description in country_descriptions %}
+                    <li><a href="/euro/memorable/{{ description.country_name }}">{{ description.country_name }} </a> </li>
+                {% endfor %}
+            </ul>
+        </ul>
+    {% endif %}
+    </div>
+
+{% endblock %}
+
+{% block info %}
+    <div id="country"> {# div по странам #}
+        <p>
+            Страна: <strong>{{ country.country_name }}</strong>
+            {% if request.user.is_authenticated %}
+                {% if country.coins_group %}
+                    <a>показать </a><a class="link" id="show_{{ country.country_name }}" onClick="onClinkHref()">имеющиеся,</a>
+                    <a> показать </a><a class="link" id="hide_{{ country.country_name }}" onClick="onClinkHref()">отсутсвующие,</a>
+                    <a> показать </a><a class="link" id="all_{{ country.country_name }}" onClick="onClinkHref()">все</a>
+                {% endif %}
+            {% endif %}
+        </p>
+
+        {% for coin in coins %}
+            <div class="empty_memorable"> {# div в который все вставлено #}
+            {% if request.user.is_authenticated %}
+                {# у пользователя есть такая монента #}
+                {% if request.user|user_have_coin:coin %}
+                    {# рисуем check что она есть #}
+                    <div class="memorable" style="background-image:url({{ coin.image.url }});" id="{{ country.country_name }}_present">
+                    <div class="present" style="background-image:url(/media/check.png); width: 25px; height: 22px;" id="{{ coin.id }}_{{ country.country_name }}_absent"> </div>
+                {% else %}
+                    {# монеты нет #}
+                    <div class="memorable" style="background-image:url({{ coin.image.url }});" id="{{ country.country_name }}_absent">
+                    <div class="present" style="background-image:url(/media/uncheck.png); width: 25px; height: 22px;" id="{{ coin.id }}_{{ country.country_name }}_present"> </div>
+                {% endif %}
+            {% else %}
+                {# пользователь на авторизован, рисум протсо картинку #}
+                <div class="row" style="background-image:url({{ coin.image.url }});" id="{{ country.country_name }}_absent">
+            {% endif %}
+        <div class=nominal_memorable>
+            {{ coin.nominal }}
+        </div>
+
+        {# вешаем обработчик клика на checkboxе #}
+        <script>
+            var div_click_{{ coin.id }} = $("[id*='{{ coin.id }}_{{ country.country_name }}']");
+            div_click_{{ coin.id }}.click(function () {
+                onClickIMG(this);
+            });
+        </script>
+        </div> {# div с картинкой #}
+        </div> {# div в который все вставлено #}
+
+
+        {% endfor %}
+
+    </div> {# конец div по странам #}
+
+
+{% endblock %}

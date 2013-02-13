@@ -59,6 +59,31 @@ body, html {
     z-index: 5;
 }
 
+.memorable {
+    margin-left: 0px;
+    margin-top: 0px;
+    min-width: 200px;
+    min-height: 200px;
+    z-index: 5;
+}
+.empty_memorable {
+    float: none;
+    margin-left: 30px;
+    margin-top: 0px;
+    margin-bottom: 10px;
+    min-width: 200px;
+    min-height: 200px;
+    text-align:left;
+}
+
+.nominal_memorable {
+    position:absolute;
+    margin-left: 13%;
+    margin-top: 20%;
+    z-index: 5;
+}
+
+
 .empty_row {
     float: left;
     margin-left: 30px;

@@ -34,21 +34,34 @@ class groupCoin():
 """
 Обработка запроса на получеие юбилейных euro монет
 """
-def euro_memorable(request):
-    if 'country' in request.GET:
-        if request.GET['country'] == "all":
+def memorable(request, country, selectors):
+    #if 'country' in request.GET:
+    if country:
+        if country == "all":
             request_country_list = Country.objects.all().values_list('name', flat=True)
         else:
-            request_country_list = request.GET['country'].split(",")
+            request_country_list = [country]
 
         # список всех евро стран
         country_descriptions = []
-        country = Country.objects.filter(coin_group__group_name__in=['euro']).order_by('name'). distinct()
+        country = Country.objects.filter(coin_group__group_name__in=selectors).order_by('name').distinct()
         for place in country:
             country_description = countryCoins(place.name)
             country_descriptions.append(country_description)
 
-        return render_to_response('euro_memorable.html',  {'country_descriptions':country_descriptions, 'request': request})
+        # получили все монеты этой страны
+        grouped_country = []
+        for request_country in request_country_list:
+            group_country = countryCoins(request_country)
+            coins_of_country = Coins.objects.filter(country__name = request_country).order_by('coin_group', 'nominal')
+            for selector in selectors:
+                coins_of_country = coins_of_country.filter(coin_group__group_name = selector)
+            coins_of_country = coins_of_country.order_by('coin_group', 'nominal')
+
+            grouped_country.append(group_country)
+
+
+        return render_to_response('memorable.html',  {'coins': coins_of_country, 'country_descriptions':country_descriptions, 'request': request})
     else:
         message = 'You submitted an empty form.'
     return HttpResponse(message)
@@ -71,7 +84,7 @@ def euro(request):
         for place in country:
             country_description = countryCoins(place.name)
 
-            types = place.coin_group.all().exclude(group_name__in=['euro', 'normal'])
+            types = place.coin_group.all().exclude(group_name__in=['euro', 'normal', 'memorable'])
             for type in types:
                 country_description.add_coin_group(groupCoin(None, type.group_name))
             country_descriptions.append(country_description)
@@ -85,7 +98,7 @@ def euro(request):
                 if 'type' in request.GET:
                     type_of_coins = Country.objects.filter(name = request_country)[0].coin_group.all().filter(group_name=request.GET['type'])
                 else:
-                    type_of_coins = Country.objects.filter(name = request_country)[0].coin_group.all().exclude(group_name__in=['euro', 'normal'])
+                    type_of_coins = Country.objects.filter(name = request_country)[0].coin_group.all().exclude(group_name__in=['euro', 'normal', 'memorable'])
 
                 # есть типы кроме euro, и стандарт (есть ли другие выпуски?)
                 if type_of_coins:
@@ -93,7 +106,7 @@ def euro(request):
                         coins = coins_of_country.filter(coin_group__group_name = coins_group_name).order_by('coin_group', 'nominal')
                         group_country.add_coin_group(groupCoin(coins, coins_group_name))
                 else:
-                    group_country.add_coin_group(groupCoin(coins_of_country.order_by('nominal'), ""))
+                    group_country.add_coin_group(groupCoin(coins_of_country.exclude(coin_group__group_name = 'memorable').order_by('nominal'), ""))
 
             grouped_country.append(group_country)
             # 'query': request_country,

@@ -4,7 +4,7 @@
 import settings
 from django.conf.urls import patterns, include, url
 
-from euro.views import euro, euro_memorable
+from euro.views import euro, memorable
 from euro.views import usa
 from euro.views import russia
 from euro.views import set_coins
@@ -20,7 +20,7 @@ urlpatterns = patterns('',
     # url(r'^coins/', include('coins.foo.urls')),
 
     url(r'^euro/$', euro),
-    url(r'^euro_memorable/$', euro_memorable),
+    url(r'^euro/memorable/(?P<country>\w+)$', memorable, {'selectors': ["euro", "memorable"]}),
     url(r'^set/$', set_coins),
     url(r'^usa/$', usa),
     url(r'^russia/$', russia),
