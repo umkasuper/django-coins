@@ -14,12 +14,26 @@
             <li><a href="/euro/?country=all">Регулярный чекан</a> </li>
             <ul>
                 {% for description in country_descriptions %}
-                    <li><a href="/euro/?country={{ description.country_name }}">{{ description.country_name }} </a>
+                    <li><a id="{{ description.country_name }}" href="/euro/?country={{ description.country_name }}">{{ description.country_name }}</a>
+                    {% comment %}
+                    {% if request.user.is_authenticated %}
+                    <li><a id="{{ description.country_name }}" href="/euro/?country={{ description.country_name }}">{{ description.country_name }} ({{ description.have_coins_country }}/{{ description.all_coins_country }}) </a>
+                    {% else %}
+                        <li><a id="{{ description.country_name }}" href="/euro/?country={{ description.country_name }}">{{ description.country_name }} ({{ description.all_coins_country }}) </a>
+                    {% endif %}
+                    {% endcomment %}
 
                         {% if description.coins_group %}
                             <ul>
                                 {% for group_description in description.coins_group %}
-                                    <li><a href="/euro/?country={{ description.country_name }}&type={{ group_description.coins_group_name }}">{{ group_description.coins_group_name }}</a></li>
+                                    <li><a id="{{ description.country_name }}-{{ group_description.coins_group_name }}" href="/euro/?country={{ description.country_name }}&type={{ group_description.coins_group_name }}">{{ group_description.coins_group_name }}</a></li>
+                                    {% comment %}
+                                    {% if request.user.is_authenticated %}
+                                        <li><a id="{{ description.country_name }}-{{ group_description.coins_group_name }}" href="/euro/?country={{ description.country_name }}&type={{ group_description.coins_group_name }}">{{ group_description.coins_group_name }} ({{ group_description.have_coins_group }}/{{ group_description.all_coins_group }})</a></li>
+                                    {% else %}
+                                        <li><a id="{{ description.country_name }}-{{ group_description.coins_group_name }}" href="/euro/?country={{ description.country_name }}&type={{ group_description.coins_group_name }}">{{ group_description.coins_group_name }} ({{ group_description.all_coins_group }})</a></li>
+                                    {% endif %}
+                                    {% endcomment %}
                                 {% endfor %}
                             </ul>
 
@@ -32,6 +46,20 @@
             <li><a href="/euro/memorable/all">Памятные евро</a> </li>
         </ul>
     {% endif %}
+
+    <script>
+        {% for description in country_descriptions %}
+            description['{{ description.country_name }}'] = new info(null, {{ description.all_coins_country }}, {{ description.have_coins_country }});
+            set_li_value('{{ description.country_name }}', '{{ description.country_name }}');
+            {% for group_description in description.coins_group %}
+                var key = '{{ description.country_name }}-{{ group_description.coins_group_name }}';
+                description[key] = new info('{{ description.country_name }}', {{ group_description.all_coins_group }}, {{ group_description.have_coins_group }});
+                set_li_value(key, '{{ group_description.coins_group_name }}');
+            {% endfor %}
+
+        {% endfor %}
+    </script>
+
     </div>
 
 {% endblock %}
@@ -66,7 +94,7 @@
             {% if country.coins_group %}
                 {%  for group in country.coins_group %}
                     <div id="group_in_country"> {# div по группам #}
-                    {% if  group.coins_group_name %}
+                    {% if group.coins_group_name %}
                         <p style="margin-bottom: 0px;"> <strong>{{ group.coins_group_name }}</strong></p>
                     {%  endif %}
                     {% for coin in group.coins_group %}
@@ -77,16 +105,22 @@
                                     {# у пользователя есть такая монента #}
                                     {% if request.user|user_have_coin:coin %}
                                         {# рисуем check что она есть #}
-                                        <div class="row" style="background-image:url({{ coin.image.url }});" id="{{ country.country_name }}_present">
-                                            <div class="present" style="background-image:url(/media/check.png); width: 25px; height: 22px;" id="{{ coin.id }}_{{ country.country_name }}_absent"> </div>
+                                        {% if group.coins_group_name %}
+                                                <div class="row" style="background-image:url({{ coin.image.url }});" id="{{ country.country_name }}-{{ group.coins_group_name }}_present">
+                                                    <div class="present" style="background-image:url(/media/check.png); width: 25px; height: 22px;" id="{{ coin.id }}_{{ country.country_name }}-{{ group.coins_group_name }}_absent"> </div>
+                                        {% else %}
+                                                <div class="row" style="background-image:url({{ coin.image.url }});" id="{{ country.country_name }}_present">
+                                                    <div class="present" style="background-image:url(/media/check.png); width: 25px; height: 22px;" id="{{ coin.id }}_{{ country.country_name }}_absent"> </div>
+                                        {% endif %}
+
                                     {% else %}
                                         {# монеты нет #}
-                                         <div class="row" style="background-image:url({{ coin.image.url }});" id="{{ country.country_name }}_absent">
-                                            <div class="present" style="background-image:url(/media/uncheck.png); width: 25px; height: 22px;" id="{{ coin.id }}_{{ country.country_name }}_present"> </div>
+                                         <div class="row" style="background-image:url({{ coin.image.url }});" id="{{ country.country_name }}-{{ group.coins_group_name }}_absent">
+                                            <div class="present" style="background-image:url(/media/uncheck.png); width: 25px; height: 22px;" id="{{ coin.id }}_{{ country.country_name }}-{{ group.coins_group_name }}_present"> </div>
                                     {% endif %}
                                 {% else %}
                                     {# пользователь на авторизован, рисум протсо картинку #}
-                                    <div class="row" style="background-image:url({{ coin.image.url }});" id="{{ country.country_name }}_absent">
+                                    <div class="row" style="background-image:url({{ coin.image.url }});" id="{{ country.country_name }}-{{ group.coins_group_name }}_absent">
                                 {% endif %}
                                         <div class=nominal2>
                                             {{ coin.nominal }}
@@ -94,6 +128,23 @@
 
                                         {# вешаем обработчик клика на checkboxе #}
                                         <script>
+                                            {% comment %}
+                                            var key_name = "{{ country.country_name }}";
+                                            {% if group.coins_group_name %}
+                                            {% endif %}
+                                            if (key_name in description)
+                                                description[key_name] += 1;
+                                            else
+                                                description[key_name] = 1;
+
+                                            {% if group.coins_group_name %}
+                                                key_name = key_name + "_{{ group.coins_group_name }}"
+                                                if (key_name in description)
+                                                    description[key_name] += 1;
+                                                else
+                                                    description[key_name] = 1;
+                                            {% endif %}
+                                            {% endcomment %}
                                             var div_click_{{ coin.id }} = $("[id*='{{ coin.id }}_{{ country.country_name }}']");
                                             div_click_{{ coin.id }}.click(function () {
                                                 onClickIMG(this);
@@ -111,8 +162,6 @@
             {% endif %}
 
             </div> {#  конец div по странам #}
-
-
 
             {% comment %}
             {% if country.coins_group %}

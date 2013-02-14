@@ -27,7 +27,7 @@ body, html {
 }
 #left_side {
 	float: left;
-	width: 200px;
+	width: 250px;
 	min-width: 200px;
 	background-color:#3F0;
     text-align:left;
@@ -40,7 +40,7 @@ body, html {
 
 #info {
 	//background-color: #63C;
-	margin-left:202px;
+	margin-left:252px;
     text-align:left;
 	//float: left;
 }

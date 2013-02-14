@@ -11,6 +11,44 @@
 <body id="doc-body">
 
 <script type="text/javascript" language="Javascript">
+
+    description = {};
+
+    function info (owner, all, have) {
+        this.owner = owner;
+        this.all = all;
+        this.have = have;
+    };
+
+    function set_li_value(id_name, text)
+    {
+        var country_info = description[id_name];
+        {% if request.user.is_authenticated %}
+            $('li a#' + id_name).text(text + ' (' + country_info.have + '/' + country_info.all + ')');
+        {% else %}
+            $('li a#' + id_name).text(text + ' (' + country_info.all + ')');
+        {% endif %}
+    };
+
+    function inc_value_have(id_name)
+    {
+        description[id_name].have++;
+        if (description[id_name].owner)
+            inc_value_have(description[id_name].owner);
+
+        set_li_value(id_name);
+    };
+
+    function dec_value_have(id_name)
+    {
+        description[id_name].have--;
+        if (description[id_name].owner)
+            dec_value_have(description[id_name].owner);
+
+        set_li_value(id_name);
+    };
+
+
     function onClinkHref()
     {
         var commands = window.event.target.id.split("_");
@@ -28,20 +66,37 @@
         // отключаем те которые имеются
         if (command == 'hide')
             $("[id*=" + id +"_present]").hide();
-    }
+    };
 
     function onClickIMG(item)
     {
         var img = $(item).css("background-image").replace(/[\(\)']+/g,'').split('/').pop();
+        var id = $(item).attr("id").split('_');
 
+        if (id[2] == 'absent')
+        {
+            $(item).css("background-image", "url(/media/uncheck.png)");
+            $(item).attr("id", id[0] + '_' + id[1] + '_' + 'present');
+            dec_value_have(id[1]);
+        }
+        else {
+            $(item).css("background-image", "url(/media/check.png)");
+            $(item).attr("id", id[0] + '_' + id[1] + '_' + 'absent');
+            inc_value_have(id[1]);
+        };
+//(img == "check.png") ? $(item).css("background-image", "url(/media/uncheck.png)") : $(item).css("background-image", "url(/media/check.png)");
+/*
         $.ajax({
             type: "POST",
             url: "/set/",
             data: {id: item.id.split('_')[0], operation: (img == "check.png") ? "remove" : "add"}
         }).done(function( msg ) {
                 if (msg == "ok")
+                {
                      (img == "check.png") ? $(item).css("background-image", "url(/media/uncheck.png)") : $(item).css("background-image", "url(/media/check.png)");
+                }
             });
+*/
     }
 </script>
 
