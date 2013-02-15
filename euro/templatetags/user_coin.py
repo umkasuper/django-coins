@@ -10,3 +10,22 @@ def user_have_coin(user, coin):
 
 register.filter('user_have_coin', user_have_coin)
 
+def user_have_coin_present(user, coin):
+    return 'present' if coin.coin_owner.filter(username = user.username) else 'absent'
+
+
+@register.simple_tag
+def get_id_name(country_name, group_name):
+    return '%s%s%s' % (group_name if group_name else "", '-' if group_name else "", country_name)
+
+@register.simple_tag
+def user_coins_info(request, coin, country_name, group_name):
+    id_name = get_id_name(country_name, group_name)
+    present = user_have_coin_present(request.user, coin) if request.user.is_authenticated else ""
+    div_class_row = '<div class="row" style="background-image:url(%s);" id="%s_%s">' % (coin.image.url, id_name, present)
+    if request.user.is_authenticated:
+        div_class_present = '<div class="present" style="background-image:url(%s); width: 25px; height: 22px;" id="%s_%s_%s"> </div>' % ('/media/check.png' if present == 'present' else '/media/uncheck.png', coin.id, id_name, 'absent' if present == 'present' else 'present')
+    else:
+        div_class_present = ''
+
+    return div_class_row + div_class_present

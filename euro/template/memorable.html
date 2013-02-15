@@ -12,10 +12,10 @@
     {% if country_descriptions %}
         <ul class="nav">
             <li><a href="/euro/?country=all">Регулярный чекан</a> </li>
-            <li><a href="/euro/memorable/all">Памятные евро</a> </li>
+            <li><a id="all" href="/euro/memorable/all">Памятные евро</a> </li>
             <ul>
                 {% for description in country_descriptions %}
-                        <li><a id="{{ description.country_name }}" href="/euro/memorable/{{ description.country_name }}">{{ description.country_name }}</a> </li>
+                    <li><a id="{{ description.country_name }}" href="/euro/memorable/{{ description.country_name }}">{{ description.country_name }}</a> </li>
                 {% endfor %}
             </ul>
         </ul>
@@ -23,9 +23,20 @@
 
     <script>
         {% for description in country_descriptions %}
-            description['{{ description.country_name }}'] = new info(null, {{ description.all_coins_country }}, {{ description.have_coins_country }});
-            set_li_value('{{ description.country_name }}', '{{ description.country_name }}');
+            description['{{ description.country_name }}'] = new info('all', '{{ description.country_name }}', {{ description.all_coins_country }}, {{ description.have_coins_country }});
+            set_li_value('{{ description.country_name }}');
         {% endfor %}
+
+        var all_coins = 0;
+        var have_coins = 0;
+        for (var des in description)
+        {
+            all_coins += description[des].all;
+            have_coins += description[des].have;
+        }
+        description['all'] = new info(null, 'Памятные евро', all_coins, have_coins);
+        set_li_value('all');
+
     </script>
 
     </div>

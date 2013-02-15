@@ -20,7 +20,7 @@ urlpatterns = patterns('',
     # url(r'^coins/', include('coins.foo.urls')),
 
     url(r'^euro/$', euro),
-    url(r'^euro/memorable/(?P<country>\w+)$', memorable, {'selectors': ["euro", "memorable"]}),
+    url(r'^euro/memorable/(?P<country>\S+)$', memorable, {'selectors': ["euro", "memorable"]}),
     url(r'^set/$', set_coins),
     url(r'^usa/$', usa),
     url(r'^russia/$', russia),
