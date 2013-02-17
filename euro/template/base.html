@@ -71,10 +71,10 @@
 
     function onClickIMG(item)
     {
-        var img = $(item).css("background-image").replace(/[\(\)']+/g,'').split('/').pop();
+//        var img = $(item).css("background-image").replace(/[\(\)']+/g,'').split('/').pop();
         var id = $(item).attr("id").split('_');
         var id_parent = $(item).parent().attr("id").split('_');
-
+/*
         if (id[2] == 'absent')
         {
             $(item).css("background-image", "url(/media/uncheck.png)");
@@ -88,19 +88,32 @@
             $(item).parent().attr("id", id_parent[0] + '_' + 'present');
             inc_value_have(id[1]);
         };
+*/
 //(img == "check.png") ? $(item).css("background-image", "url(/media/uncheck.png)") : $(item).css("background-image", "url(/media/check.png)");
-/*
+
         $.ajax({
             type: "POST",
             url: "/set/",
-            data: {id: item.id.split('_')[0], operation: (img == "check.png") ? "remove" : "add"}
+            data: {id: item.id.split('_')[0], operation: (id[2] == 'absent') ? "remove" : "add"}
         }).done(function( msg ) {
                 if (msg == "ok")
                 {
-                     (img == "check.png") ? $(item).css("background-image", "url(/media/uncheck.png)") : $(item).css("background-image", "url(/media/check.png)");
+                    if (id[2] == 'absent')
+                    {
+                        $(item).css("background-image", "url(/media/uncheck.png)");
+                        $(item).attr("id", id[0] + '_' + id[1] + '_' + 'present');
+                        $(item).parent().attr("id", id_parent[0] + '_' + 'absent');
+                        dec_value_have(id[1]);
+                    }
+                    else {
+                        $(item).css("background-image", "url(/media/check.png)");
+                        $(item).attr("id", id[0] + '_' + id[1] + '_' + 'absent');
+                        $(item).parent().attr("id", id_parent[0] + '_' + 'present');
+                        inc_value_have(id[1]);
+                    };
                 }
             });
-*/
+
     }
 </script>
 

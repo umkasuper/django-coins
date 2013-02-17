@@ -50,9 +50,11 @@ class Coins(models.Model):
     image = models.ImageField(upload_to='euro') # где лежат фотографии монет
     coin_group = models.ManyToManyField(CoinGroup, blank=True)  # группа к которой относиться монета
     coin_owner = models.ManyToManyField(User, blank=True)  # кто владеет монетой
+    year = models.IntegerField(blank=True, null=True) # год выпуска монеты
+    description = models.TextField(blank=True, null=True) # описание монеты
 
     def __unicode__(self):
-        return u'%s - %s' % (unicode(self.country), unicode(self.nominal))
+        return u'%s - %s - %s' % (unicode(self.country), unicode(self.nominal), unicode(self.description))
 
     class Meta:
         verbose_name = u'Монеты'
