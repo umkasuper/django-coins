@@ -68,7 +68,7 @@
                         {# пользователь на авторизован, рисум протсо картинку #}
                         <div class="memorable" style="background-image:url({{ coin.image.url }});" id="{{ place.country_name }}_absent">
                     {% endif %}
-                    <div class=nominal_memorable> {{ coin.nominal }} </div>
+                    <div class="nominal_memorable"> {{ coin.nominal }} </div>
 
                     {# вешаем обработчик клика на checkboxе #}
                     <script>
@@ -78,6 +78,17 @@
                         });
                     </script>
                     </div> {# div с картинкой #}
+                    <div class="year">
+                        {% if coin.year %}
+                            {{ coin.year }}
+                        {% endif %}
+                    </div>
+                    <div class="description">
+                        {% if coin.description %}
+                            {{ coin.description }}
+                        {% endif %}
+                    </div>
+
                 </div> {# div в который все вставлено #}
 
                 {% endfor %}

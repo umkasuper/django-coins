@@ -68,7 +68,7 @@ def memorable(request, country, selectors):
         grouped_country = []
         for place in country:
             # сколько всего монет этой страны
-            coins_of_country = coins_selectors.filter(country__name = place.name)
+            coins_of_country = coins_selectors.filter(country__name = place.name).order_by('year')
             # сколько монет этой страны есть у пользователя
             coins_of_country_user = coins_of_country.filter(coin_owner__username = request.user.username)
 
@@ -80,9 +80,9 @@ def memorable(request, country, selectors):
             country_description = countryCoins(place.name, len(coins_of_country), len(coins_of_country_user))
             country_descriptions.append(country_description)
 
-        # получили все монеты этой страны
-        for request_country in request_country_list:
-            coins_of_country = coins_selectors.filter(country__name = request_country).order_by('coin_group', 'nominal')
+#        # получили все монеты этой страны
+#        for request_country in request_country_list:
+#            coins_of_country = coins_selectors.filter(country__name = request_country).order_by('-year')
 
         return render_to_response('memorable.html',  {'country': grouped_country, 'country_descriptions':country_descriptions, 'request': request})
     else:
