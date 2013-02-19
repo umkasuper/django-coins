@@ -65,7 +65,9 @@ body, html {
     margin-top: 0px;
     width: 200px;
     height: 200px;
+    line-height: 200px;
     z-index: 5;
+    font-size: 0;
 }
 .empty_memorable {
     float: none;
@@ -111,6 +113,7 @@ body, html {
     width: 130px;
     vertical-align: top;
     text-align: center;
+
 }
 
 .year {
@@ -121,10 +124,18 @@ body, html {
 }
 
 .description {
-    margin-left: 30px;
-    float: left;
-    line-height: 200px;
+    width: 400px;
+    height: 200px;
+    display: table;
+    float: none;
 }
+
+.description_info {
+    display: table-cell;
+    vertical-align: middle;
+    #border: 1px solid #33FF00;
+}
+
 
 .link {
     /*        display: block; /* Ссылка как блочный элемент */

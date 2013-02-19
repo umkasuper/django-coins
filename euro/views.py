@@ -7,7 +7,7 @@ from euro.models import Coins, Country
 from django.contrib.auth.models import User
 
 """
-Класс опимывающий выборку по страны
+Класс опиcывающий выборку по страны
 """
 class countryCoins():
 
@@ -79,10 +79,6 @@ def memorable(request, country, selectors):
 
             country_description = countryCoins(place.name, len(coins_of_country), len(coins_of_country_user))
             country_descriptions.append(country_description)
-
-#        # получили все монеты этой страны
-#        for request_country in request_country_list:
-#            coins_of_country = coins_selectors.filter(country__name = request_country).order_by('-year')
 
         return render_to_response('memorable.html',  {'country': grouped_country, 'country_descriptions':country_descriptions, 'request': request})
     else:
@@ -163,7 +159,7 @@ def usa(request):
 Обработка запроса выдачи страницы с монетыми России
 """
 def russia(request):
-    return render_to_response('russia.html',  {'request': request})
+    return render_to_response('russia.html',  {'request'                                                                                                                                                    : request})
 
 """
  Обработка POST запроса на запись, удаление монеты в колекцию
