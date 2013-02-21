@@ -12,10 +12,10 @@
     {% if country_descriptions %}
         <ul class="nav">
             <li><a href="/euro/?country=all">Регулярный чекан</a> </li>
-            <li><a id="all" href="/euro/memorable/all">Памятные евро</a> </li>
+            <li><a id="all" href="{% url 'memorable' 'all' %}">Памятные евро</a> </li>
             <ul>
                 {% for description in country_descriptions %}
-                    <li><a id="{{ description.country_name }}" href="/euro/memorable/{{ description.country_name }}">{{ description.country_name }}</a> </li>
+                    <li><a id="{{ description.country_name }}" href="{% url 'memorable' description.country_name %}">{{ description.country_name }}</a> </li>
                 {% endfor %}
             </ul>
         </ul>
@@ -37,6 +37,10 @@
         description['all'] = new info(null, 'Памятные евро', all_coins, have_coins);
         set_li_value('all');
 
+        {% for place in country %}
+            $('li a#{{ place.country_name }}').css('font-weight','bold');
+        {% endfor %}
+        $('li a#all').css('font-weight','bold');
     </script>
 
     </div>
@@ -47,9 +51,12 @@
 
     <div id="country"> {# div по странам #}
         {% for place in country %}
+        <p></p>
+{% comment %}
             <p>
                 Страна: <strong>{{ place.country_name }}</strong>
             </p>
+{% endcomment %}
             {% for group in place.coins_group %}
                 {% for coin in group.coins_group %}
                     <div class="empty_memorable"> {# div в который все вставлено #}
@@ -58,11 +65,11 @@
                         {% if request.user|user_have_coin:coin %}
                             {# рисуем check что она есть #}
                             <div class="memorable" style="background-image:url({{ coin.image.url }});" id="{{ place.country_name }}_present">
-                            <div class="present" style="background-image:url(/media/check.png); width: 25px; height: 22px;" id="{{ coin.id }}_{{ place.country_name }}_absent"> </div>
+                            <div class="present" style="background-image:url(/media/check.png); width: 25px; height: 22px;" id="{{ coin.id }}_{{ coin.year }}_{{ place.country_name }}_absent"> </div>
                         {% else %}
                             {# монеты нет #}
                             <div class="memorable" style="background-image:url({{ coin.image.url }});" id="{{ place.country_name }}_absent">
-                            <div class="present" style="background-image:url(/media/uncheck.png); width: 25px; height: 22px;" id="{{ coin.id }}_{{ place.country_name }}_present"> </div>
+                            <div class="present" style="background-image:url(/media/uncheck.png); width: 25px; height: 22px;" id="{{ coin.id }}_{{ coin.year }}_{{ place.country_name }}_present"> </div>
                         {% endif %}
                     {% else %}
                         {# пользователь на авторизован, рисум протсо картинку #}
@@ -72,7 +79,7 @@
 
                     {# вешаем обработчик клика на checkboxе #}
                     <script>
-                        var div_click_{{ coin.id }} = $("[id*='{{ coin.id }}_{{ country.country_name }}']");
+                        var div_click_{{ coin.id }} = $("[id*='{{ coin.id }}_{{ coin.year }}_{{ country.country_name }}']");
                         div_click_{{ coin.id }}.click(function () {
                             onClickIMG(this);
                         });

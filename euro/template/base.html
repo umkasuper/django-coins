@@ -14,11 +14,12 @@
 
     description = {};
 
-    function info (owner, view, all, have) {
+    function info (owner, view, all, have, select) {
         this.owner = owner;
         this.view = view;
         this.all = all;
         this.have = have;
+        this.select = select;
     };
 
     function set_li_value(id_name)
@@ -71,45 +72,30 @@
 
     function onClickIMG(item)
     {
-//        var img = $(item).css("background-image").replace(/[\(\)']+/g,'').split('/').pop();
+        // формат id id_year_country_<have>
         var id = $(item).attr("id").split('_');
         var id_parent = $(item).parent().attr("id").split('_');
-/*
-        if (id[2] == 'absent')
-        {
-            $(item).css("background-image", "url(/media/uncheck.png)");
-            $(item).attr("id", id[0] + '_' + id[1] + '_' + 'present');
-            $(item).parent().attr("id", id_parent[0] + '_' + 'absent');
-            dec_value_have(id[1]);
-        }
-        else {
-            $(item).css("background-image", "url(/media/check.png)");
-            $(item).attr("id", id[0] + '_' + id[1] + '_' + 'absent');
-            $(item).parent().attr("id", id_parent[0] + '_' + 'present');
-            inc_value_have(id[1]);
-        };
-*/
-//(img == "check.png") ? $(item).css("background-image", "url(/media/uncheck.png)") : $(item).css("background-image", "url(/media/check.png)");
 
         $.ajax({
             type: "POST",
             url: "/set/",
-            data: {id: item.id.split('_')[0], operation: (id[2] == 'absent') ? "remove" : "add"}
+            data: {id: id[0], operation: (id[3] == 'absent') ? "remove" : "add"}
         }).done(function( msg ) {
                 if (msg == "ok")
                 {
-                    if (id[2] == 'absent')
+                    if (id[3] == 'absent')
                     {
                         $(item).css("background-image", "url(/media/uncheck.png)");
-                        $(item).attr("id", id[0] + '_' + id[1] + '_' + 'present');
+                        $(item).attr("id", id.slice(0, -1).join('_') + '_present');
                         $(item).parent().attr("id", id_parent[0] + '_' + 'absent');
-                        dec_value_have(id[1]);
+                        dec_value_have(id[2]);
                     }
-                    else {
+                    else
+                    {
                         $(item).css("background-image", "url(/media/check.png)");
-                        $(item).attr("id", id[0] + '_' + id[1] + '_' + 'absent');
+                        $(item).attr("id", id.slice(0, -1).join('_') + '_absent');
                         $(item).parent().attr("id", id_parent[0] + '_' + 'present');
-                        inc_value_have(id[1]);
+                        inc_value_have(id[2]);
                     };
                 }
             });

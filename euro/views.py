@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render_to_response
 from euro.models import Coins, Country
 from django.contrib.auth.models import User
+from datetime import datetime
 
 """
 Класс опиcывающий выборку по страны
@@ -72,13 +73,25 @@ def memorable(request, country, selectors):
             # сколько монет этой страны есть у пользователя
             coins_of_country_user = coins_of_country.filter(coin_owner__username = request.user.username)
 
+            country_description = countryCoins(place.name, len(coins_of_country), len(coins_of_country_user))
+
             if place.name in request_country_list: # если эта страна среди запршеных
                 country = countryCoins(place.name, len(coins_of_country), len(coins_of_country_user))
                 country.add_coin_group(groupCoin(coins_of_country, place.name, 0, 0))
                 grouped_country.append(country) # добавляем ее
 
-            country_description = countryCoins(place.name, len(coins_of_country), len(coins_of_country_user))
             country_descriptions.append(country_description)
+
+
+        # формируем список по годам
+#        for request_year in xrange(2004, datetime.now().year + 1):
+#           # сколько всего монет этой страны
+#            coins_of_country = coins_selectors.filter(year = request_year).order_by('country__name')
+#            # сколько монет этого года есть у пользователя
+#            coins_of_country_user = coins_of_country.filter(coin_owner__username = request.user.username)
+#            country_description = countryCoins(str(request_year), len(coins_of_country), len(coins_of_country_user))
+#            country_descriptions.append(country_description)
+
 
         return render_to_response('memorable.html',  {'country': grouped_country, 'country_descriptions':country_descriptions, 'request': request})
     else:

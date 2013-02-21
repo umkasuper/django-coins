@@ -54,6 +54,16 @@
         description['all'] = new info(null, 'Регулярный чекан', all_coins, have_coins);
         set_li_value('all');
 
+        {% for country in grouped_country %}
+            {% if country.coins_group %}
+                {% for group in country.coins_group %}
+                    var key = '{% get_id_name country.country_name group.coins_group_name %}'
+                    $('li a#'+key).css('font-weight','bold');
+                {% endfor %}
+            {% endif %}
+            $('li a#{{ country.country_name }}').css('font-weight','bold');
+        {% endfor %}
+        $('li a#all').css('font-weight','bold');
     </script>
 
     </div>
@@ -102,7 +112,7 @@
 
                                     {# вешаем обработчик клика на checkboxе #}
                                     <script>
-                                        var div_click_{{ coin.id }} = $("[id*='{{ coin.id }}_{% get_id_name country.country_name group.coins_group_name %}']");
+                                        var div_click_{{ coin.id }} = $("[id*='{{ coin.id }}_0_{% get_id_name country.country_name group.coins_group_name %}']");
                                         div_click_{{ coin.id }}.click(function () {
                                             onClickIMG(this);
                                         });
