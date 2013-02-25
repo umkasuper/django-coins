@@ -33,6 +33,9 @@
     {% endif %}
 
     <script>
+        var all_coins = 0;
+        var have_coins = 0;
+
         {% for description in country_descriptions %}
             description['{{ description.country_name }}'] = new info('all', '{{ description.country_name }}', {{ description.all_coins_country }}, {{ description.have_coins_country }});
             set_li_value('{{ description.country_name }}');
@@ -41,16 +44,18 @@
                 description[key] = new info('{{ description.country_name }}', '{{ group_description.coins_group_name }}', {{ group_description.all_coins_group }}, {{ group_description.have_coins_group }});
                 set_li_value(key);
             {% endfor %}
+            all_coins += description['{{ description.country_name }}'].all;
+            have_coins += description['{{ description.country_name }}'].have;
 
         {% endfor %}
 
-        var all_coins = 0;
-        var have_coins = 0;
-        for (var des in description)
-        {
-            all_coins += description[des].all;
-            have_coins += description[des].have;
-        }
+        //var all_coins = 0;
+        //var have_coins = 0;
+        //for (var des in description)
+        //{
+        //   all_coins += description[des].all;
+        //    have_coins += description[des].have;
+        //}
         description['all'] = new info(null, 'Регулярный чекан', all_coins, have_coins);
         set_li_value('all');
 
