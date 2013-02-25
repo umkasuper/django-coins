@@ -28,7 +28,7 @@
                     {% endif %}
                 {% endfor %}
             </ul>
-            <li><a href="/euro/memorable/all">Памятные евро</a> </li>
+            <li><a href="/euro/memorable/all">Памятные евро ({{ memorable_user }}/{{ memorable }})</a> </li>
         </ul>
     {% endif %}
 
@@ -49,14 +49,7 @@
 
         {% endfor %}
 
-        //var all_coins = 0;
-        //var have_coins = 0;
-        //for (var des in description)
-        //{
-        //   all_coins += description[des].all;
-        //    have_coins += description[des].have;
-        //}
-        description['all'] = new info(null, 'Регулярный чекан', all_coins, have_coins);
+        description['all'] = new info(null, $('li a#all').text(), all_coins, have_coins);
         set_li_value('all');
 
         {% for country in grouped_country %}
