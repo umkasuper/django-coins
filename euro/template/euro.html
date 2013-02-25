@@ -46,7 +46,6 @@
             {% endfor %}
             all_coins += description['{{ description.country_name }}'].all;
             have_coins += description['{{ description.country_name }}'].have;
-
         {% endfor %}
 
         description['all'] = new info(null, $('li a#all').text(), all_coins, have_coins);
