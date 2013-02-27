@@ -1,5 +1,17 @@
 {% extends "base.html" %}
 
+{% block system %}
+{% endblock%}
+
+{% block left_side %}
+    <div id="left_side">
+    <ul>
+        <li><a href="{% url 'auth_password_reset' %}">Забыли пароль?</a></li>
+        <li><a href="{% url 'registration_register' %}">Регистрация</a></li>
+    </ul>
+    </div>
+{% endblock %}
+
 {% block info %}
 
 {% if form.errors %}
@@ -8,31 +20,41 @@
 
 <style>
     #info {
-    //background-color: #63C;
-    margin-left:0px;
+    #background-color: #63C;
+    margin-left:100px;
     text-align:left;
-    //float: left;
+    float: left;
     }
 </style>
 
 
-<form method="post" action="{% url 'django.contrib.auth.views.login' %}">
-{% csrf_token %}
-<table ALIGN="center">
-<tr>
-    <td>{{ form.username.label_tag }}</td>
-    <td>{{ form.username }}</td>
-</tr>
-<tr>
-    <td>{{ form.password.label_tag }}</td>
-    <td>{{ form.password }}</td>
-</tr>
-</table>
 
- <input type="submit" value="login" style="width:100px;margin:0 auto;display:block;"> </input>
-    <!--<input type="submit" value="login" style="width:100px;display:block;"> </input> -->
+{% if user.is_authenticated %}
+    Что такое, {{ user.username }}? Вы же уже авторизорваны.
+    Впрочем, всегда можно <a href="{% url "auth_logout" %}">выйти</a>.<br/><br/>
+    {% else %}
+    {% if form.non_field_errors %}
+        {{ form.non_field_errors }}
+    {% endif %}
 
-<input type="hidden" name="next" value="{{ next }}"> </input>
-</form>
+    <form method="post" action="{% url 'django.contrib.auth.views.login' %}"> {% csrf_token %}
+
+    <table align="center">
+    <tr>
+        <td>{{ form.username.label_tag }}</td>
+        <td>{{ form.username }}</td>
+    </tr>
+    <tr>
+        <td>{{ form.password.label_tag }}</td>
+        <td>{{ form.password }}</td>
+    </tr>
+    </table>
+
+     <input type="submit" value="login" style="width:100px;margin:0 auto;display:block;"> </input>
+        <!--<input type="submit" value="login" style="width:100px;display:block;"> </input> -->
+
+    <input type="hidden" name="next" value="{{ next }}"> </input>
+    </form>
+{% endif %}
 
 {% endblock %}

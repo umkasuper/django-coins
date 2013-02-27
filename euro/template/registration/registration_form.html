@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block system %}
+{% endblock%}
+
+{% block title %}
+    Регистрация
+{% endblock %}
+
+{% block left_side %}
+{% endblock %}
+
+{% block info %}
+
+<style>
+    body {
+        text-align:center;
+    }
+    #info {
+        width:1000px;
+        text-align:left;
+        padding:15px;
+        margin:0px auto;
+    }
+    
+</style>
+
+<div align="center">
+<h1>Регистрация</h1>
+<form method="post" action=""> {% csrf_token %}
+    <table ALIGN="center">
+    {% for field in form %}
+        <tr>
+            <td>{{ field.label_tag }}</td>
+            <td class="clearfix"> {{ field }}
+                {% if field.help_text %}<td class="clearfix">{{ field.help_text }}</td>{% endif %}
+                {% if field.errors %}<td class="myerrors clearfix">{{ field.errors }}</td>{% endif %}
+            </td>
+        </tr>
+
+    {% endfor %}
+    </table>
+<input type="submit" value="Зарегистрироваться" / class="clearfix">
+</form>
+</div>
+{% endblock %}

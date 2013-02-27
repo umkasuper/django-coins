@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block system %}
+{% endblock%}
+
+{% block title %}
+    Поздравляем с активацией
+{% endblock %}
+
+{% block left_side %}
+{% endblock %}
+
+{% block info %}
+    <style>
+        body {
+            text-align:center;
+        }
+        #info {
+            width:1000px;
+            text-align:center;
+            padding:15px;
+            margin:0px auto;
+        }
+
+    </style>
+
+<h1>Активация</h1>
+Привет, {{ account }}!<br/>
+Ваша учетная запись активирована. <a href="{% url 'auth_login' %}">Заходите</a> на сайт.
+<br/><br/>
+{% endblock %}
