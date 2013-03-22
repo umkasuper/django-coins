@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render_to_response
 from euro.models import Coins, Country
 from django.contrib.auth.models import User
+import copy
 from datetime import datetime
 
 """
@@ -217,8 +218,26 @@ def euro(request):
     return HttpResponse(message)
 
 # обработка запроса выдачи страницы монет США
-def usa(request):
-    return render_to_response('usa.html', {'request': request})
+def usa(request, type, selectors):
+    """
+    """
+    # добавляем в селектор type, селектор это тип кого выбираем
+    selector = copy.copy(selectors)
+    selector.append(type)
+    # отбираем все монеты США
+    coins_of_country = Coins.objects.filter(country__name=u'США')
+    countryDescription  = countryCoins(u'США', len(coins_of_country), 0)
+
+    # находим группы монет США и считаем сколько монет в них
+    type_of_coins = Country.objects.filter(name=u'США')[0].coin_group.all().values_list('group_name', flat=True).exclude(group_name='memorable').exclude(group_name='normal')
+    for sel in type_of_coins:
+        coins_selectors = coins_of_country.filter(coin_group__group_name=sel).order_by('year')
+        coins_in_group = None
+        if sel in selector:
+            coins_in_group = coins_selectors
+        countryDescription.add_coin_group(groupCoin(coins_in_group, sel, len(coins_selectors), 0))
+
+    return render_to_response('usa.html', {'request': request, 'coins': countryDescription})
 
 
 """

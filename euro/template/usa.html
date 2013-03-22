@@ -1,12 +1,100 @@
 {% extends "base.html" %}
 
+{% load user_coin %}
+
 {% block title %}
     Монеты США
 {% endblock %}
 
 {% block left_side %}
+    <div id="left_side">
+
+    {% if coins %}
+        <ul class="nav">
+        <li><a id="all">США</a> </li>
+        <ul>
+            {% for description in coins.coins_group %}
+                <li> <a id="{{ description.coins_group_name }}" href="{% url 'usa_memorable' description.coins_group_name %}"> {{ description.coins_group_name }}</a> </li>
+            {% endfor %}
+        </ul>
+        </ul>
+    {% endif %}
+
+    <script>
+    {% for description in coins.coins_group %}
+        description['{{ description.coins_group_name }}'] = new info('all', '{{ description.coins_group_name }}', {{ description.all_coins_group }}, {{ description.have_coins_group }});
+        set_li_value('{{ description.coins_group_name }}');
+        {% if description.coins_group %}
+            $('li a#{{ description.coins_group_name }}').css('font-weight','bold');
+        {% endif %}
+    {% endfor %}
+
+    var all_coins = 0;
+    var have_coins = 0;
+    for (var des in description)
+    {
+        all_coins += description[des].all;
+        have_coins += description[des].have;
+    }
+    description['all'] = new info(null, $('li a#all').text(), all_coins, have_coins);
+    set_li_value('all');
+
+    $('li a#all').css('font-weight','bold');
+    </script>
+
+    </div>
+
 {% endblock %}
 
 {% block info %}
+
+{% for group in coins.coins_group %}
+
+    {% for coin in group.coins_group %}
+        <div class="empty_memorable" style="height: 300px;"> {# div в который все вставлено #}
+        {% if request.user.is_authenticated %}
+            {# у пользователя есть такая монента #}
+            {% if request.user|user_have_coin:coin %}
+                {# рисуем check что она есть #}
+                <div class="memorable" style="width: 300px;height: 300px;background-image:url({{ coin.image.url }});" id="{{ group.coins_group_name }}_present">
+                <div class="present" style="background-image:url(/media/check.png); width: 25px; height: 22px;" id="{{ coin.id }}_{{ coin.year }}_{{ group.coins_group_name }}_absent"> </div>
+            {% else %}
+                {# монеты нет #}
+                <div class="memorable" style="width: 300px;height: 300px;background-image:url({{ coin.image.url }});" id="{{ group.coins_group_name }}_absent">
+                <div class="present" style="background-image:url(/media/uncheck.png); width: 25px; height: 22px;" id="{{ coin.id }}_{{ coin.year }}_{{ group.coins_group_name }}_present"> </div>
+            {% endif %}
+        {% else %}
+            {# пользователь на авторизован, рисум протсо картинку #}
+            <div class="memorable" style="width: 300px;height: 300px;background-image:url({{ coin.image.url }});" id="{{ group.coins_group_name }}_absent">
+        {% endif %}
+    <div class="nominal_memorable"> {{ coin.nominal }} </div>
+
+    {# вешаем обработчик клика на checkboxе #}
+    <script>
+        var div_click_{{ coin.id }} = $("[id*='{{ coin.id }}_{{ coin.year }}_{{ group.coins_group_name }}']");
+        div_click_{{ coin.id }}.click(function () {
+            onClickIMG(this);
+        });
+    </script>
+    </div> {# div с картинкой #}
+
+    <div class="year">
+        {% if coin.year %}
+            {{ coin.year }}
+        {% endif %}
+    </div>
+
+
+    <div class="description" style="width: 300px;height: 200px;">
+        {% if coin.description %}
+            <div class="description_info"> {{ coin.description }}</div>
+        {% endif %}
+    </div>
+
+    </div> {# div в который все вставлено #}
+
+    {% endfor %}
+{% endfor %}
+
 {% endblock %}
 

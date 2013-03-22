@@ -21,9 +21,9 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     url(r'^euro/$', 'euro.views.euro', name='euro'),
+    url(r'^usa/memorable/(?P<type>\S+)/$', usa, {'selectors': ["memorable"]}, name='usa_memorable'),
     url(r'^euro/memorable/(?P<country>\S+)$', memorable, {'selectors': ["euro", "memorable"]}, name='memorable'),
     url(r'^set/$', set_coins),
-    url(r'^usa/$', usa),
     url(r'^russia/$', russia),
 
     # Uncomment the admin/doc line below to enable admin documentation:
