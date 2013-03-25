@@ -6,8 +6,7 @@ from django.conf.urls import patterns, include, url
 from django.views.generic import TemplateView
 
 from euro.views import euro, memorable
-from euro.views import usa
-from euro.views import russia
+from euro.views import all_memorable
 from euro.views import set_coins
 from euro.sys   import site_logout
 
@@ -21,10 +20,10 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     url(r'^euro/$', 'euro.views.euro', name='euro'),
-    url(r'^usa/memorable/(?P<type>\S+)/$', usa, {'selectors': ["memorable"]}, name='usa_memorable'),
     url(r'^euro/memorable/(?P<country>\S+)$', memorable, {'selectors': ["euro", "memorable"]}, name='memorable'),
+    #url(u'^(?P<country>\S+)/memorable/(?P<type>\S+)/$', usa, {'selectors': ['memorable']}, name='country_memorable'),
+    url(u'^(?P<country>\S+)/memorable/(?P<type>[-\w\ ]+)/$', all_memorable, {'selectors': ['memorable']}, name='country_memorable'),
     url(r'^set/$', set_coins),
-    url(r'^russia/$', russia),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

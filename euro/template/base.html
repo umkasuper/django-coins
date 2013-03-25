@@ -124,8 +124,8 @@
 
     <nav id="navigation">
         <a href="/euro/?country=all">Евро союз</a>
-        <a href="/russia/?type=all">Россия</a>
-        <a href="{% url 'usa_memorable' 'empty' %}">США</a>
+        <a href="{% url 'country_memorable' country='Россия' type='empty' %}">Россия</a>
+        <a href="{% url 'country_memorable' country='США' type='empty' %}">США</a>
     </nav>
 
     <div id="block-info"> <!-- тут содержиться и меню и информация -->

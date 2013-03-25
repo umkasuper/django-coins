@@ -1,6 +1,8 @@
 # ~*~ coding: utf-8 ~*~
 
 from django import template
+import re
+import unidecode
 
 register = template.Library()
 
@@ -33,3 +35,10 @@ def user_coins_info(request, coin, country_name, group_name):
 @register.simple_tag
 def country_from_path(request):
     return request.get_full_path().split('/')[-1]
+
+
+def u_slugify(str):
+    str = unidecode.unidecode(str).lower()
+    return re.sub(r'\W+','-',str)
+
+register.filter('u_slugify', u_slugify)

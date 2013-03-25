@@ -126,7 +126,7 @@ def memorable(request, country, selectors):
         #            country_descriptions.append(country_description)
 
 
-        return render_to_response('memorable.html',
+        return render_to_response('memorable_euro.html',
                                   {'country': grouped_country, 'country_descriptions': country_descriptions,
                                    'request': request, 'regular': len(regular), 'regular_user': len(regular_user)})
     else:
@@ -217,36 +217,31 @@ def euro(request):
         message = 'You submitted an empty form.'
     return HttpResponse(message)
 
-# обработка запроса выдачи страницы монет США
-def usa(request, type, selectors):
+"""
+Через вот эту ф-цию работают все основные юбилейки
+"""
+
+def all_memorable(request, type, country, selectors):
     """
     """
     # добавляем в селектор type, селектор это тип кого выбираем
     selector = copy.copy(selectors)
     selector.append(type)
-    # отбираем все монеты США
-    coins_of_country = Coins.objects.filter(country__name=u'США')
-    countryDescription  = countryCoins(u'США', len(coins_of_country), 0)
+    # отбираем все монеты
+    coins_of_country = Coins.objects.filter(country__name=country)
+    countryDescription = countryCoins(country, len(coins_of_country), 0)
 
-    # находим группы монет США и считаем сколько монет в них
-    type_of_coins = Country.objects.filter(name=u'США')[0].coin_group.all().values_list('group_name', flat=True).exclude(group_name='memorable').exclude(group_name='normal')
+    # находим группы монет  и считаем сколько монет в них
+    type_of_coins = Country.objects.filter(name=country)[0].coin_group.all().values_list('group_name', flat=True).exclude(group_name='memorable').exclude(group_name='normal')
     for sel in type_of_coins:
-        coins_selectors = coins_of_country.filter(coin_group__group_name=sel).order_by('year')
+        coins_selectors = coins_of_country.filter(coin_group__group_name=sel).order_by('year','id')
+        coins_user = coins_selectors.filter(coin_owner__username=request.user.username)
         coins_in_group = None
         if sel in selector:
             coins_in_group = coins_selectors
-        countryDescription.add_coin_group(groupCoin(coins_in_group, sel, len(coins_selectors), 0))
+        countryDescription.add_coin_group(groupCoin(coins_in_group, sel, len(coins_selectors), len(coins_user)))
 
-    return render_to_response('usa.html', {'request': request, 'coins': countryDescription})
-
-
-"""
-Обработка запроса выдачи страницы с монетыми России
-"""
-
-
-def russia(request):
-    return render_to_response('russia.html', {'request': request})
+    return render_to_response('memorable.html', {'request': request, 'coins': countryDescription, 'country': country})
 
 
 """

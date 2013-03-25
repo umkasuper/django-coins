@@ -3,44 +3,43 @@
 {% load user_coin %}
 
 {% block title %}
-    Евро юбилейные монеты
+    Монеты {{ country }}
 {% endblock %}
 
 {% block left_side %}
     <div id="left_side">
 
-    {% if country_descriptions %}
+    {% if coins %}
         <ul class="nav">
-            <li><a href="/euro/?country=all">Регулярный чекан ({{ regular_user }}/{{ regular }})</a> </li>
-            <li><a id="all" href="{% url 'memorable' 'all' %}">Памятные евро</a> </li>
-            <ul>
-                {% for description in country_descriptions %}
-                    <li><a id="{{ description.country_name }}" href="{% url 'memorable' description.country_name %}">{{ description.country_name }}</a> </li>
-                {% endfor %}
-            </ul>
+        <li><a id="all">{{ country }}</a> </li>
+        <ul>
+            {% for description in coins.coins_group %}
+                <li> <a id="{{ description.coins_group_name|u_slugify }}" href="{% url 'country_memorable' country=country type=description.coins_group_name %}"> {{ description.coins_group_name }}</a> </li>
+            {% endfor %}
+        </ul>
         </ul>
     {% endif %}
 
     <script>
-        {% for description in country_descriptions %}
-            description['{{ description.country_name }}'] = new info('all', '{{ description.country_name }}', {{ description.all_coins_country }}, {{ description.have_coins_country }});
-            set_li_value('{{ description.country_name }}');
-        {% endfor %}
+    {% for description in coins.coins_group %}
+        description['{{ description.coins_group_name|u_slugify }}'] = new info('all', '{{ description.coins_group_name }}', {{ description.all_coins_group }}, {{ description.have_coins_group }});
+        set_li_value('{{ description.coins_group_name|u_slugify }}');
+        {% if description.coins_group %}
+            $('li a#{{ description.coins_group_name|u_slugify }}').css('font-weight','bold');
+        {% endif %}
+    {% endfor %}
 
-        var all_coins = 0;
-        var have_coins = 0;
-        for (var des in description)
-        {
-            all_coins += description[des].all;
-            have_coins += description[des].have;
-        }
-        description['all'] = new info(null, $('li a#all').text(), all_coins, have_coins);
-        set_li_value('all');
+    var all_coins = 0;
+    var have_coins = 0;
+    for (var des in description)
+    {
+        all_coins += description[des].all;
+        have_coins += description[des].have;
+    }
+    description['all'] = new info(null, $('li a#all').text(), all_coins, have_coins);
+    set_li_value('all');
 
-        {% for place in country %}
-            $('li a#{{ place.country_name }}').css('font-weight','bold');
-        {% endfor %}
-        $('li a#all').css('font-weight','bold');
+    $('li a#all').css('font-weight','bold');
     </script>
 
     </div>
@@ -49,60 +48,55 @@
 
 {% block info %}
 
-    <div id="country"> {# div по странам #}
-        {% for place in country %}
-        <p></p>
-{% comment %}
-            <p>
-                Страна: <strong>{{ place.country_name }}</strong>
-            </p>
-{% endcomment %}
-            {% for group in place.coins_group %}
-                {% for coin in group.coins_group %}
-                    <div class="empty_memorable"> {# div в который все вставлено #}
-                    {% if request.user.is_authenticated %}
-                        {# у пользователя есть такая монента #}
-                        {% if request.user|user_have_coin:coin %}
-                            {# рисуем check что она есть #}
-                            <div class="memorable" style="background-image:url({{ coin.image.url }});" id="{{ place.country_name }}_present">
-                            <div class="present" style="background-image:url(/media/check.png); width: 25px; height: 22px;" id="{{ coin.id }}_{{ coin.year }}_{{ place.country_name }}_absent"> </div>
-                        {% else %}
-                            {# монеты нет #}
-                            <div class="memorable" style="background-image:url({{ coin.image.url }});" id="{{ place.country_name }}_absent">
-                            <div class="present" style="background-image:url(/media/uncheck.png); width: 25px; height: 22px;" id="{{ coin.id }}_{{ coin.year }}_{{ place.country_name }}_present"> </div>
-                        {% endif %}
-                    {% else %}
-                        {# пользователь на авторизован, рисум протсо картинку #}
-                        <div class="memorable" style="background-image:url({{ coin.image.url }});" id="{{ place.country_name }}_absent">
-                    {% endif %}
-                    <div class="nominal_memorable"> {{ coin.nominal }} </div>
+{% for group in coins.coins_group %}
 
-                    {# вешаем обработчик клика на checkboxе #}
-                    <script>
-                        var div_click_{{ coin.id }} = $("[id*='{{ coin.id }}_{{ coin.year }}_{{ country.country_name }}']");
-                        div_click_{{ coin.id }}.click(function () {
-                            onClickIMG(this);
-                        });
-                    </script>
-                    </div> {# div с картинкой #}
-                    <div class="year">
-                        {% if coin.year %}
-                            {{ coin.year }}
-                        {% endif %}
-                    </div>
-                    <div class="description">
-                        {% if coin.description %}
-                            <div class="description_info"> {{ coin.description }}</div>
-                        {% endif %}
-                    </div>
+    {% for coin in group.coins_group %}
+        <div class="empty_memorable" style="height: 300px;"> {# div в который все вставлено #}
 
-                </div> {# div в который все вставлено #}
+        {% if request.user.is_authenticated %}
+            {# у пользователя есть такая монента #}
+            {% if request.user|user_have_coin:coin %}
+                {# рисуем check что она есть #}
 
-                {% endfor %}
-            {% endfor %}
-        {% endfor %}
+                <div class="memorable" style="width: 300px;height: 300px;background-image:url({{ coin.image.url }});" id="{{ group.coins_group_name|u_slugify }}_present">
+                <div class="present" style="background-image:url(/media/check.png); margin-left:10px; margin-top: 20px; width: 25px; height: 22px;" id="{{ coin.id }}_{{ coin.year }}_{{ group.coins_group_name|u_slugify }}_absent"> </div>
+            {% else %}
+                {# монеты нет #}
+                <div class="memorable" style="width: 300px;height: 300px;background-image:url({{ coin.image.url }});" id="{{ group.coins_group_name|u_slugify }}_absent">
+                <div class="present" style="background-image:url(/media/uncheck.png); margin-left:10px; margin-top: 20px; width: 25px; height: 22px;" id="{{ coin.id }}_{{ coin.year }}_{{ group.coins_group_name|u_slugify }}_present"> </div>
+            {% endif %}
+        {% else %}
+            {# пользователь на авторизован, рисум протсо картинку #}
+            <div class="memorable" style="width: 300px;height: 300px;background-image:url({{ coin.image.url }});" id="{{ group.coins_group_name|u_slugify }}_absent">
+        {% endif %}
+    {# вешаем обработчик клика на checkboxе #}
+    <script>
+        var div_click_{{ coin.id }} = $("[id*='{{ coin.id }}_{{ coin.year }}_{{ group.coins_group_name|u_slugify }}']");
+        div_click_{{ coin.id }}.click(function () {
+            onClickIMG(this);
+        });
+    </script>
+    </div> {# div с картинкой #}
 
-    </div> {# конец div по странам #}
+    <div class="nominal_memorable" style="margin-left:265px; margin-top: 265px"> {{ coin.nominal }} </div>
 
+    <div class="year" style="line-height: 300px;">
+        {% if coin.year %}
+            {{ coin.year }}
+        {% endif %}
+    </div>
+
+
+    <div class="description" style="width: 300px;height: 300px;">
+        {% if coin.description %}
+            <div class="description_info"> {{ coin.description }}</div>
+        {% endif %}
+    </div>
+
+    </div> {# div в который все вставлено #}
+
+    {% endfor %}
+{% endfor %}
 
 {% endblock %}
+
