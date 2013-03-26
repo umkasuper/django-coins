@@ -33,7 +33,7 @@ class CoinsCounrty(admin.ModelAdmin):
 
 class CoinsAdmin(admin.ModelAdmin):
     form = CoinsForm
-    list_filter = ('country',)
+    list_filter = ('country', 'coin_group',)
     ordering = ('country', 'nominal',)
 
 
