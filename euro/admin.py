@@ -19,7 +19,7 @@ class CoinsForm(forms.ModelForm):
             coin = kwargs['instance']
         except:
             super(CoinsForm, self).__init__(*args, **kwargs)
-        return
+            return
 
         super(CoinsForm, self).__init__(*args, **kwargs)
 
