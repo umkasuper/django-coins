@@ -104,10 +104,10 @@ def memorable(request, country, selectors):
 
             country_description = countryCoins(place.name, len(coins_of_country), len(coins_of_country_user))
 
-            if place.name in request_country_list: # если эта страна среди запршеных
+            if place.name in request_country_list:  # если эта страна среди запршеных
                 country = countryCoins(place.name, len(coins_of_country), len(coins_of_country_user))
                 country.add_coin_group(groupCoin(coins_of_country, place.name, 0, 0))
-                grouped_country.append(country) # добавляем ее
+                grouped_country.append(country)  # добавляем ее
 
             country_descriptions.append(country_description)
 
@@ -199,11 +199,9 @@ def euro(request):
                         group_country.add_coin_group(groupCoin(coins, coins_group_name, 0, 0))
                 else:
                     group_country.add_coin_group(groupCoin(coins_of_country. \
-                                                               exclude(coin_group__group_name='memorable').order_by(
-                        'nominal'), "", 0, 0))
+                        exclude(coin_group__group_name='memorable').order_by('nominal'), "", 0, 0))
 
             grouped_country.append(group_country)
-
 
         # подсчитаем сколько всего юбилеек
         memorable = Coins.objects.filter(coin_group__group_name='euro').filter(coin_group__group_name='memorable')
@@ -217,9 +215,11 @@ def euro(request):
         message = 'You submitted an empty form.'
     return HttpResponse(message)
 
+
 """
 Через вот эту ф-цию работают все основные юбилейки
 """
+
 
 def all_memorable(request, type, country, selectors):
     """
@@ -234,7 +234,7 @@ def all_memorable(request, type, country, selectors):
     # находим группы монет  и считаем сколько монет в них
     type_of_coins = Country.objects.filter(name=country)[0].coin_group.all().values_list('group_name', flat=True).exclude(group_name='memorable').exclude(group_name='normal')
     for sel in type_of_coins:
-        coins_selectors = coins_of_country.filter(coin_group__group_name=sel).order_by('year','id')
+        coins_selectors = coins_of_country.filter(coin_group__group_name=sel).order_by('year', 'id')
         coins_user = coins_selectors.filter(coin_owner__username=request.user.username)
         coins_in_group = None
         if sel in selector:
