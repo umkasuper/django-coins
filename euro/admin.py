@@ -5,10 +5,30 @@ from django import forms
 from euro.models import Country, Nominal, Coins, CoinGroup
 from django.contrib.admin import SimpleListFilter
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.admin import widgets
+from django.conf import settings
+from django.utils.safestring import mark_safe
 #from django.contrib.admin.options import changelist_view
 
+
+class CountrySelector(forms.Select):
+
+    def __init__(self, attrs=None, choices=()):
+        super(CountrySelector, self).__init__(attrs, choices)
+
+    def render(self, name, value, attrs=None, choices=()):
+        return super(CountrySelector, self).render(name, value, attrs, choices)
+#        return rendered + mark_safe(u'''<script type="text/javascript"></script>''')
+
+
 class CoinsForm(forms.ModelForm):
-    coin_group = forms.ModelMultipleChoiceField(queryset = CoinGroup.objects.all())
+#    country = forms.ModelChoiceField(queryset=Country.objects.all(), widget=forms.Select(), label=u"Страны")
+    country = forms.ModelChoiceField(queryset=Country.objects.all(), widget=CountrySelector(), label=u"Страны")
+
+    coin_group = forms.ModelMultipleChoiceField(queryset=CoinGroup.objects.all(),
+                                                widget=widgets.FilteredSelectMultiple(u'Группы', False),
+                                                label=Coins._meta.get_field_by_name('coin_group')[0].verbose_name)
+
 
     class Meta:
         model = Coins
@@ -25,17 +45,18 @@ class CoinsForm(forms.ModelForm):
 
         try:
             print "Error __init__ 2"
-            self.fields['coin_group'].queryset = Country.objects.filter(name = unicode(coin.country))[0].coin_group.all()
+            self.fields['coin_group'].queryset = Country.objects.filter(name=unicode(coin.country))[0].coin_group.all()
         except:
             print "Error __init__ 3"
             self.fields['coin_group'].queryset = CoinGroup.objects.all()
-        
+
+
 class CoinsCountry(admin.ModelAdmin):
     ordering = ('name',)
 
 
 class DecadeBornListFilter(SimpleListFilter):
-    title = (u'Группы')
+    title = u'Группы'
 
     parameter_name = 'group__id__exact'
 
@@ -46,18 +67,20 @@ class DecadeBornListFilter(SimpleListFilter):
 
     def queryset(self, request, queryset):
         if 'group__id__exact' in request.GET:
-            return queryset.filter(coin_group__id = request.GET['group__id__exact'])
+            return queryset.filter(coin_group__id=request.GET['group__id__exact'])
         return queryset
+
 
 class CoinsAdmin(admin.ModelAdmin):
     form = CoinsForm
-#    list_filter = ('country', 'coin_group',)
+    #    list_filter = ('country', 'coin_group',)
     list_filter = ('country', DecadeBornListFilter,)
+    filter_horizontal = ('coin_owner', 'coin_group',)
     ordering = ('country', 'nominal',)
 
     def get_queryset(self, request):
         if 'country__id__exact' in request.GET:
-            return Country.objects.filter(id = request.GET['country__id__exact'])[0].coin_group.all()
+            return Country.objects.filter(id=request.GET['country__id__exact'])[0].coin_group.all()
         return CoinGroup.objects.all()
 
 
