@@ -49,7 +49,7 @@ class Country(models.Model):
 class Coins(models.Model):
     country = models.ForeignKey(Country, verbose_name=u'Страна')
     nominal = models.ForeignKey(Nominal, verbose_name=u'Номинал')
-    image = models.ImageField(upload_to='russia/city military glory',
+    image = models.ImageField(upload_to='usa/territory',
                               verbose_name=u'Картинка')  # где лежат фотографии монет
     coin_group = models.ManyToManyField(CoinGroup, verbose_name=u'Группы',
                                         blank=True)  # группа к которой относиться монета
