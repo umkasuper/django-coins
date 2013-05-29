@@ -25,7 +25,7 @@ def user_coins_info(request, coin, country_name, group_name):
     id_name = get_id_name(country_name, group_name)
     present = user_have_coin_present(request.user, coin) if request.user.is_authenticated else ""
     div_class_row = '<div class="row" style="background-image:url(%s);" id="%s_%s">' % (coin.image.url, id_name, present)
-    if request.user.is_authenticated:
+    if request.user.is_authenticated():
         div_class_present = '<div class="present" style="background-image:url(%s); width: 25px; height: 22px;" id="%s_%d_%s_%s"> </div>' % ('/media/check.png' if present == 'present' else '/media/uncheck.png', coin.id, coin.year if coin.year else 0, id_name, 'absent' if present == 'present' else 'present')
     else:
         div_class_present = ''
