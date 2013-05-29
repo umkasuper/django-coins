@@ -143,7 +143,7 @@ def euro(request):
     if 'country' in request.GET:
 
         if request.GET['country'] == "all":
-            request_country_list = Country.objects.all().values_list('name', flat=True)
+            request_country_list = Country.objects.filter(coin_group__group_name__in=['euro', 'normal']).values_list('name', flat=True) #Country.objects.all().values_list('name', flat=True)
         else:
             request_country_list = request.GET['country'].split(",")
         grouped_country = []
