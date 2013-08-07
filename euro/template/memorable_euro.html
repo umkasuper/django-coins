@@ -14,10 +14,19 @@
             <li><a href="/euro/?country=all">Регулярный чекан ({{ regular_user }}/{{ regular }})</a> </li>
             <li><a id="all" href="{% url 'memorable' 'all' %}">Памятные евро</a> </li>
             <ul>
+                <a>По странам</a>
                 {% for description in country_descriptions %}
                     <li><a id="{{ description.country_name }}" href="{% url 'memorable' description.country_name %}">{{ description.country_name }}</a> </li>
                 {% endfor %}
             </ul>
+
+            <ul>
+                <a>По годам</a>
+                {% for description in years_descriptions %}
+                    <li><a id="{{ description.country_name }}" href="{% url 'year' description.country_name %}">{{ description.country_name }}</a> </li>
+                {% endfor %}
+            </ul>
+
         </ul>
     {% endif %}
 
@@ -27,6 +36,7 @@
             set_li_value('{{ description.country_name }}');
         {% endfor %}
 
+
         var all_coins = 0;
         var have_coins = 0;
         for (var des in description)
@@ -34,11 +44,25 @@
             all_coins += description[des].all;
             have_coins += description[des].have;
         }
+
+        {% for description in years_descriptions %}
+            description['{{ description.country_name }}'] = new info(null, '{{ description.country_name }}', {{ description.all_coins_country }}, {{ description.have_coins_country }});
+            set_li_value('{{ description.country_name }}');
+        {% endfor %}
+
+        //description['country'] = new info('all', $('li a#country').text(), all_coins, have_coins);
+        //set_li_value('country');
+
         description['all'] = new info(null, $('li a#all').text(), all_coins, have_coins);
         set_li_value('all');
 
         {% for place in country %}
-            $('li a#{{ place.country_name }}').css('font-weight','bold');
+            {% if place.year %}
+                $('li a#{{ place.year }}').css('font-weight','bold');
+            {% else %}
+                $('li a#{{ place.country_name }}').css('font-weight','bold');
+            {% endif %}
+
         {% endfor %}
         $('li a#all').css('font-weight','bold');
     </script>
@@ -92,7 +116,11 @@
                     </div>
                     <div class="description">
                         {% if coin.description %}
-                            <div class="description_info"> {{ coin.description }}</div>
+                            {% if year_filter %}
+                                <div class="description_info"> {{ place.country_name }} - {{ coin.description }}</div>
+                            {% else %}
+                                <div class="description_info"> {{ coin.description }}</div>
+                            {% endif %}
                         {% endif %}
                     </div>
 
