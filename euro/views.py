@@ -18,8 +18,9 @@ class countryCoins():
     country_name = ""   # название страны
     all_coins_country = 0
     have_coins_country = 0
+    year = None # для группировки по годам
 
-    def __init__(self, country_name, all_coins_country, have_coins_country):
+    def __init__(self, country_name, year, all_coins_country, have_coins_country):
         """ конструктор
             :param  country_name         имя страны
             :type   country_name         string
@@ -32,6 +33,7 @@ class countryCoins():
         self.all_coins_country = all_coins_country
         self.have_coins_country = have_coins_country
         self.coins_group = []
+        self.year = year
 
 
     def add_coin_group(self, coin_group):
@@ -76,7 +78,7 @@ class groupCoin():
 """
 
 
-def memorable(request, country, selectors):
+def memorable(request, country, selectors, year=None):
     #if 'country' in request.GET:
     if country:
         if country == "all":
@@ -102,10 +104,12 @@ def memorable(request, country, selectors):
             # сколько монет этой страны есть у пользователя
             coins_of_country_user = coins_of_country.filter(coin_owner__username=request.user.username)
 
-            country_description = countryCoins(place.name, len(coins_of_country), len(coins_of_country_user))
+            country_description = countryCoins(place.name, None, len(coins_of_country), len(coins_of_country_user))
 
             if place.name in request_country_list:  # если эта страна среди запршеных
-                country = countryCoins(place.name, len(coins_of_country), len(coins_of_country_user))
+                country = countryCoins(place.name, year, len(coins_of_country), len(coins_of_country_user))
+                if year:
+                    coins_of_country = coins_of_country.filter(year=year)
                 country.add_coin_group(groupCoin(coins_of_country, place.name, 0, 0))
                 grouped_country.append(country)  # добавляем ее
 
@@ -116,19 +120,20 @@ def memorable(request, country, selectors):
         regular = Coins.objects.filter(coin_group__group_name='euro').filter(coin_group__group_name='normal')
         regular_user = regular.filter(coin_owner__username=request.user.username)
 
+        year_descriptions = []
         # формируем список по годам
-        #        for request_year in xrange(2004, datetime.now().year + 1):
-        #           # сколько всего монет этой страны
-        #            coins_of_country = coins_selectors.filter(year = request_year).order_by('country__name')
-        #            # сколько монет этого года есть у пользователя
-        #            coins_of_country_user = coins_of_country.filter(coin_owner__username = request.user.username)
-        #            country_description = countryCoins(str(request_year), len(coins_of_country), len(coins_of_country_user))
-        #            country_descriptions.append(country_description)
+        for request_year in xrange(2004, datetime.now().year + 1):
+            # сколько всего монет этой страны
+            coins_of_country = coins_selectors.filter(year = request_year).order_by('country__name')
+            # сколько монет этого года есть у пользователя
+            coins_of_country_user = coins_of_country.filter(coin_owner__username = request.user.username)
+            country_description = countryCoins(str(request_year), year, len(coins_of_country), len(coins_of_country_user))
+            year_descriptions.append(country_description)
 
 
         return render_to_response('memorable_euro.html',
-                                  {'country': grouped_country, 'country_descriptions': country_descriptions,
-                                   'request': request, 'regular': len(regular), 'regular_user': len(regular_user)})
+                                  {'country': grouped_country, 'country_descriptions': country_descriptions, 'years_descriptions': year_descriptions,
+                                   'request': request, 'regular': len(regular), 'regular_user': len(regular_user), 'year_filter': year})
     else:
         message = 'You submitted an empty form.'
     return HttpResponse(message)
@@ -160,7 +165,7 @@ def euro(request):
             coins_of_country_user = coins_of_country.filter(coin_owner__username=request.user.username)
 
             # создаем описатель для страны
-            country_description = countryCoins(place.name, len(coins_of_country), len(coins_of_country_user))
+            country_description = countryCoins(place.name, None, len(coins_of_country), len(coins_of_country_user))
 
             # находим какие группы монет етсь в этой стране кроме euro, normal, memorable
             types = place.coin_group.all().exclude(group_name__in=['euro', 'normal', 'memorable'])
@@ -179,7 +184,7 @@ def euro(request):
             del coins_of_country_user
 
         for request_country in request_country_list:
-            group_country = countryCoins(request_country, 0, 0)
+            group_country = countryCoins(request_country, None, 0, 0)
             # получили все монеты этой страны
             coins_of_country = Coins.objects.filter(country__name=request_country)
 
@@ -229,7 +234,7 @@ def all_memorable(request, type, country, selectors):
     selector.append(type)
     # отбираем все монеты
     coins_of_country = Coins.objects.filter(country__name=country)
-    countryDescription = countryCoins(country, len(coins_of_country), 0)
+    countryDescription = countryCoins(country, None, len(coins_of_country), 0)
 
     # находим группы монет  и считаем сколько монет в них
     type_of_coins = Country.objects.filter(name=country)[0].coin_group.all().values_list('group_name', flat=True).exclude(group_name='memorable').exclude(group_name='normal')
