@@ -26,6 +26,8 @@
 
     function set_li_value(id_name)
     {
+        if (!(id_name in description))
+            return;
         var country_info = description[id_name];
         {% if request.user.is_authenticated %}
             $('li a#' + id_name).text(country_info.view + ' (' + country_info.have + '/' + country_info.all + ')');
@@ -36,6 +38,8 @@
 
     function inc_value_have(id_name)
     {
+        if (!(id_name in description))
+            return;
         description[id_name].have++;
         if (description[id_name].owner)
             inc_value_have(description[id_name].owner);
@@ -45,6 +49,8 @@
 
     function dec_value_have(id_name)
     {
+        if (!(id_name in description))
+            return;
         description[id_name].have--;
         if (description[id_name].owner)
             dec_value_have(description[id_name].owner);
@@ -91,6 +97,7 @@
                         $(item).attr("id", id.slice(0, -1).join('_') + '_present');
                         $(item).parent().attr("id", id_parent[0] + '_' + 'absent');
                         dec_value_have(id[2]);
+                        dec_value_have(id[1]);
                     }
                     else
                     {
@@ -98,6 +105,7 @@
                         $(item).attr("id", id.slice(0, -1).join('_') + '_absent');
                         $(item).parent().attr("id", id_parent[0] + '_' + 'present');
                         inc_value_have(id[2]);
+                        inc_value_have(id[1]);
                     };
                 }
             });
