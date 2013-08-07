@@ -102,7 +102,7 @@
                     {%  endif %}
                     {% for coin in group.coins_group %}
                         {% if forloop.counter0|divisibleby:"4" %}<div id="line">{% endif %}
-                            {# если пользователь авторизован, то будем ему позволять наблюдать за монетами position:relative #}
+                            {# если пользователь авторизован, то будем ему позволять наблюдать за монетами  #}
                             <div class="empty_row"> {# div в который все вставлено #}
                                 {%  user_coins_info request coin country.country_name group.coins_group_name %}
                                     <div class=nominal2> {{ coin.nominal }} </div>
