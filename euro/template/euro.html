@@ -28,7 +28,12 @@
                     {% endif %}
                 {% endfor %}
             </ul>
-            <li><a href="/euro/memorable/all">Памятные евро 2€ ({{ memorable_user }}/{{ memorable }})</a> </li>
+            {% if request.user.is_authenticated %}
+                <li><a href="/euro/memorable/all">Памятные евро 2€ ({{ memorable_user }}/{{ memorable }})</a> </li>
+            {% else %}
+                <li><a href="/euro/memorable/all">Памятные евро 2€ ({{ memorable }})</a> </li>
+            {% endif %}
+            
         </ul>
     {% endif %}
 
