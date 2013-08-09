@@ -1,7 +1,9 @@
 # ~*~ coding: utf-8 ~*~
 
+from os import path
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.files.base import ContentFile
 
 # Create your models here.
 
@@ -44,12 +46,15 @@ class Country(models.Model):
     def __unicode__(self):
         return self.name
 
+def get_image_path(instance, filename):
+    return path.join(instance.path, filename)
 
 # описание монеки
 class Coins(models.Model):
     country = models.ForeignKey(Country, verbose_name=u'Страна')
     nominal = models.ForeignKey(Nominal, verbose_name=u'Номинал')
-    image = models.ImageField(upload_to='usa/territory',
+    #image = models.ImageField(upload_to='euro',
+    image = models.ImageField(upload_to=get_image_path,
                               verbose_name=u'Картинка')  # где лежат фотографии монет
     coin_group = models.ManyToManyField(CoinGroup, verbose_name=u'Группы',
                                         blank=True)  # группа к которой относиться монета
@@ -66,5 +71,23 @@ class Coins(models.Model):
         verbose_name = u'Монеты'
         verbose_name_plural = verbose_name
         ordering = ['country', ]
+
+    def save(self, *args, **kwargs):
+        """
+        записывает запись в базу
+        в зависимости от группы монеты выюирает папку для сохранения картинки
+        """
+        setattr(self, "path", "")
+        if kwargs:
+            if u'Города воинской славы' in kwargs['coin_group']:
+                setattr(self, "path", "russia/city military glory")
+
+            if u'Древние города' in kwargs['coin_group']:
+                setattr(self, "path", "russia/ancient cities")
+
+            if u'euro' in kwargs['coin_group']:
+                setattr(self, "path", "euro")
+
+        super(Coins, self).save()
 
 

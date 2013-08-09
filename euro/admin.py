@@ -83,6 +83,9 @@ class CoinsAdmin(admin.ModelAdmin):
             return Country.objects.filter(id=request.GET['country__id__exact'])[0].coin_group.all()
         return CoinGroup.objects.all()
 
+    def save_model(self, request, obj, form, change):
+        obj.save(coin_group=form.cleaned_data['coin_group'].values_list('group_name', flat=True))
+
 
 class CoinGroupAdmin(admin.ModelAdmin):
     ordering = ('group_name',)
