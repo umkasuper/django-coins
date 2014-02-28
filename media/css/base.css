@@ -1,48 +1,50 @@
 
 body, html {
-	margin:0px;
-	padding:0px;
-//	text-align:center;
+    margin:0px;
+    padding:0px;
+    /*text-align:center;*/
 }
 
 #doc-body {
-	background-color: #FFC;
+    background-color: #FFC;
 }
 
 #main-block {
-	background-color: #FC9;
-	width: 1000px;
-	margin:0 auto;
-	text-align:center;
+    background-color: #FC9;
+    width: 1000px;
+    margin:0 auto;
+    text-align:center;
 }
 
 #header {
-	background-color: #F60;
-	text-align:left;
+    background-color: #F60;
+    text-align:left;
 }
 
 #block-info {
-	width:1000px;
-	margin:0 auto;
+    width:1000px;
+    margin:0 auto;
 }
+
 #left_side {
-	float: left;
-	width: 250px;
-	min-width: 200px;
-	background-color:#3F0;
+    float: left;
+    width: 250px;
+    min-width: 200px;
+    background-color:#3F0;
     text-align:left;
 }
+
 #footer {
-	background-color: #6C0;
-	position: relative;
-	clear: both;
+    background-color: #6C0;
+    position: relative;
+    clear: both;
 }
 
 #info {
-	//background-color: #63C;
-	margin-left:252px;
+    /*background-color: #63C;*/
+    margin-left:252px;
     text-align:left;
-	//float: left;
+    /*float: left;*/
 }
 #navigation {
 }
@@ -74,7 +76,7 @@ body, html {
     margin-left: 30px;
     margin-top: 0px;
     margin-bottom: 10px;
-    //width: 400px;
+    /*width: 400px;*/
     height: 200px;
     text-align:left;
 }
@@ -85,7 +87,6 @@ body, html {
     margin-top: 175px;
     z-index: 5;
 }
-
 
 .empty_row {
     float: left;
@@ -113,7 +114,6 @@ body, html {
     width: 130px;
     vertical-align: top;
     text-align: center;
-
 }
 
 .year {
@@ -133,18 +133,15 @@ body, html {
 .description_info {
     display: table-cell;
     vertical-align: middle;
-    #border: 1px solid #33FF00;
+    /*#border: 1px solid #33FF00;*/
 }
 
 
 .link {
-    /*        display: block; /* Ссылка как блочный элемент */
-    padding: 1px; /* Поля вокруг надписи */
-    text-decoration: none; /* Подчеркивание у ссылок убираем */
-    color: #666; /* Цвет текста */
-    /*        border: 1px solid #ccc;/* Рамка вокруг пунктов меню */
-    //background-color: #f0f0f0; /* Цвет фона */
-    border-bottom: 1px solid #ccc; /* Границу снизу не проводим */
+    padding: 1px; 
+    text-decoration: none; 
+    color: #666;
+    border-bottom: 1px solid #ccc;
 }
 
 .link:link {
@@ -152,8 +149,8 @@ body, html {
 }
 
 .link:hover {
-    color: #ffe; /* Цвет текста активного пункта */
-    background-color: #5488af; /* Цвет фона активного пункта */
+    color: #ffe;
+    background-color: #5488af; 
     cursor: pointer;
 }
 

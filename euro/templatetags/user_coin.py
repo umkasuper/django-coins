@@ -3,6 +3,7 @@
 from django import template
 import re
 import unidecode
+from django.conf import settings
 
 register = template.Library()
 
@@ -36,6 +37,9 @@ def user_coins_info(request, coin, country_name, group_name):
 def country_from_path(request):
     return request.get_full_path().split('/')[-1]
 
+@register.simple_tag
+def media_root():
+    return getattr(settings, 'MEDIA_ROOT', '/')
 
 def u_slugify(str):
     str = unidecode.unidecode(str).lower()

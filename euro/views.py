@@ -1,13 +1,65 @@
 # -*- coding: utf-8 -*-
 
+#from reportlab.pdfgen import canvas
+#from pisa import pisa
+from xhtml2pdf import pisa
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render_to_response
+from django.template.loader import render_to_string
 from euro.models import Coins, Country
 from django.contrib.auth.models import User
+import os
+
 import copy
 from datetime import datetime
+from django.conf import settings
+from StringIO import StringIO
 
+class UnsupportedMediaPathException(Exception):
+    pass
+    
+def fetch_resources(uri, rel):
+    """
+    Callback to allow xhtml2pdf/reportlab to retrieve Images,Stylesheets, etc.
+    `uri` is the href attribute from the html link element.
+    `rel` gives a relative path, but it's not used here.
+    """
+    if uri.startswith(settings.MEDIA_URL):
+        path = os.path.join(settings.MEDIA_ROOT, uri.replace(settings.MEDIA_URL, ""))
+    elif uri.startswith(settings.STATIC_URL):
+        path = os.path.join(settings.STATIC_ROOT, uri.replace(settings.STATIC_URL, ""))
+    else:
+        path = os.path.join(settings.STATIC_ROOT, uri.replace(settings.STATIC_URL, ""))
+        if not os.path.isfile(path):
+            path = os.path.join(settings.MEDIA_ROOT, uri.replace(settings.MEDIA_URL, ""))
+        if not os.path.isfile(path):
+            raise UnsupportedMediaPathException('Media urls must start with %s or %s' % (settings.MEDIA_ROOT, settings.STATIC_ROOT))
+
+    print path
+    return path
+
+def as_pdf(request, country, year, param):
+#    pisa.showLogging() 
+    # Create the HttpResponse object with the appropriate PDF headers.
+    response = HttpResponse(content_type='application/pdf')
+    if year:
+        name = "%s.%s" % (str(year), "pdf")
+    else:
+        name = "%s.%s" % (country, "pdf")
+    response['Content-Disposition'] = 'attachment; filename="%s"' % (name)
+
+    buffer = StringIO()
+
+    html = render_to_string('pdf.html', param).encode("UTF-8")
+#    pdf = pisa.pisaDocument(StringIO(html.encode("UTF-8")), dest=buffer, encoding='UTF-8', link_callback=fetch_resources)
+    pdf = pisa.pisaDocument(StringIO(html.decode("UTF-8").encode("UTF-8")), dest=buffer, encoding='UTF-8', link_callback=fetch_resources)
+    response['Content-Length'] = buffer.len
+    pdf = buffer.getvalue()
+    buffer.close()
+    response.write(pdf)
+    return response
+    
 """
 Класс опиcывающий выборку по страны
 """
@@ -78,7 +130,7 @@ class groupCoin():
 """
 
 
-def memorable(request, country, selectors, year=None):
+def memorable(request, country, selectors, year=None, pdf=None):
     #if 'country' in request.GET:
     if country:
         if country == "all":
@@ -131,7 +183,11 @@ def memorable(request, country, selectors, year=None):
             year_descriptions.append(country_description)
 
 
-        return render_to_response('memorable_euro.html',
+        if pdf:
+            return as_pdf(request, request_country_list[0], year, {'country': grouped_country, 'country_descriptions': country_descriptions, 'years_descriptions': year_descriptions,
+                                   'request': request, 'regular': len(regular), 'regular_user': len(regular_user), 'year_filter': year})
+        else:
+            return render_to_response('memorable_euro.html',
                                   {'country': grouped_country, 'country_descriptions': country_descriptions, 'years_descriptions': year_descriptions,
                                    'request': request, 'regular': len(regular), 'regular_user': len(regular_user), 'year_filter': year})
     else:
@@ -148,7 +204,7 @@ def euro(request):
     if 'country' in request.GET:
 
         if request.GET['country'] == "all":
-            request_country_list = Country.objects.filter(coin_group__group_name__in=['euro', 'normal']).values_list('name', flat=True) #Country.objects.all().values_list('name', flat=True)
+            request_country_list = Country.objects.filter(coin_group__group_name__in=['euro', 'normal']).distinct().values_list('name', flat=True) #Country.objects.all().values_list('name', flat=True)
         else:
             request_country_list = request.GET['country'].split(",")
         grouped_country = []

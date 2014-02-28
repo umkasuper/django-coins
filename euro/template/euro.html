@@ -104,7 +104,7 @@
                     <div id="group_in_country"> {# div по группам #}
                     {% if group.coins_group_name %}
                         <p style="margin-bottom: 0px;"> <strong>{{ group.coins_group_name }}</strong></p>
-                    {%  endif %}
+                    {% endif %}
                     {% for coin in group.coins_group %}
                         {% if forloop.counter0|divisibleby:"4" %}<div id="line">{% endif %}
                             {# если пользователь авторизован, то будем ему позволять наблюдать за монетами  #}
@@ -123,6 +123,10 @@
                             </div> {# div в который все вставлено #}
                         {% if forloop.last or forloop.counter|divisibleby:"4" %}</div>{% endif %}
 
+                    {% empty %}
+                    <div id="line">
+                        <p> Пока тут ничего нет, эскизы монет не представлены</p>
+                    </div>
                     {% endfor %}
                     </div> {# конец div по группам #}
                 {% endfor %}

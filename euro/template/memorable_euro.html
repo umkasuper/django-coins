@@ -135,7 +135,18 @@
             {% endfor %}
         {% endfor %}
 
-    </div> {# конец div по странам #}
+    {% if request.user.is_authenticated %}
+         {% if year_filter %}
+            <a href="{% url 'pdf_year' year_filter %}">Скачать как pdf {{ year_filter }}</a>
+         {% else %}
+            {% if country|length == 1 %} 
+                <a href="{% url 'pdf_memorable' country.0.country_name %}">Скачать как pdf {{ country.0.country_name }}</a>
+            {% else %}
+                <a href="{% url 'pdf_memorable' "all" %}">Скачать как pdf all</a>
+            {% endif %}
+         {% endif %}
+    {% endif %}
 
+    </div> {# конец div по странам #}
 
 {% endblock %}

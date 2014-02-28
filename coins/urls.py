@@ -8,6 +8,7 @@ from django.views.generic import TemplateView
 from euro.views import euro, memorable
 from euro.views import all_memorable
 from euro.views import set_coins
+
 from euro.sys import site_logout
 
 
@@ -19,6 +20,11 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
+    url(r'^pdf/euro/memorable/(?P<year>\d{4})$', memorable, {'selectors': ["euro", "memorable"], 'country': "all", "pdf" :True}, name='pdf_year'),
+    url(r'^pdf/euro/memorable/(?P<country>\S+)$', memorable, {'selectors': ["euro", "memorable"], "pdf": True}, name='pdf_memorable'),
+
+    url(r'^$', memorable, {'selectors': ["euro", "memorable"], 'country': "all", 'year': '2014'}, name='year'),
+
     url(r'^euro/$', 'euro.views.euro', name='euro'),
     url(r'^euro/memorable/(?P<year>\d{4})$', memorable, {'selectors': ["euro", "memorable"], 'country': "all"}, name='year'),
     url(r'^euro/memorable/(?P<country>\S+)$', memorable, {'selectors': ["euro", "memorable"]}, name='memorable'),
