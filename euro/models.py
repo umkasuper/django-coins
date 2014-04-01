@@ -70,7 +70,7 @@ class Coins(models.Model):
     class Meta:
         verbose_name = u'Монеты'
         verbose_name_plural = verbose_name
-        ordering = ['country', ]
+        ordering = ['country', 'nominal']
 
     def save(self, *args, **kwargs):
         """
