@@ -61,7 +61,12 @@ class DecadeBornListFilter(SimpleListFilter):
     parameter_name = 'group__id__exact'
 
     def lookups(self, request, model_admin):
-        qs = model_admin.get_queryset(request)
+        # выбираем группы выбранной страны
+        if 'country__id__exact' in request.GET:
+            qs = Country.objects.filter(id=request.GET['country__id__exact'])[0].coin_group.all()
+        else: # выбираемвсе группы
+            qs = CoinGroup.objects.all()
+            
         for q in qs:
             yield (str(q.id), _(q.group_name))
 
@@ -73,15 +78,12 @@ class DecadeBornListFilter(SimpleListFilter):
 
 class CoinsAdmin(admin.ModelAdmin):
     form = CoinsForm
-    #    list_filter = ('country', 'coin_group',)
     list_filter = ('country', DecadeBornListFilter,)
     filter_horizontal = ('coin_owner', 'coin_group',)
     ordering = ('country', 'nominal',)
-
+    #ordering = ('country', 'coins',)
     def get_queryset(self, request):
-        if 'country__id__exact' in request.GET:
-            return Country.objects.filter(id=request.GET['country__id__exact'])[0].coin_group.all()
-        return CoinGroup.objects.all()
+        return Coins.objects.all()
 
     def save_model(self, request, obj, form, change):
         obj.save(coin_group=form.cleaned_data['coin_group'].values_list('group_name', flat=True))
