@@ -82,6 +82,9 @@ class Coins(models.Model):
             if u'Города воинской славы' in kwargs['coin_group']:
                 setattr(self, "path", "russia/city military glory")
 
+            if u'Российская Федерация' in kwargs['coin_group']:
+                setattr(self, "path", "russia/russian federation")
+
             if u'Древние города' in kwargs['coin_group']:
                 setattr(self, "path", "russia/ancient cities")
 
