@@ -29,7 +29,6 @@ class CoinsForm(forms.ModelForm):
                                                 widget=widgets.FilteredSelectMultiple(u'Группы', False),
                                                 label=Coins._meta.get_field_by_name('coin_group')[0].verbose_name)
 
-
     class Meta:
         model = Coins
 
@@ -64,7 +63,7 @@ class DecadeBornListFilter(SimpleListFilter):
         # выбираем группы выбранной страны
         if 'country__id__exact' in request.GET:
             qs = Country.objects.filter(id=request.GET['country__id__exact'])[0].coin_group.all()
-        else: # выбираемвсе группы
+        else:  # выбираемвсе группы
             qs = CoinGroup.objects.all()
             
         for q in qs:
@@ -82,6 +81,7 @@ class CoinsAdmin(admin.ModelAdmin):
     filter_horizontal = ('coin_owner', 'coin_group',)
     ordering = ('country', 'nominal',)
     #ordering = ('country', 'coins',)
+
     def get_queryset(self, request):
         return Coins.objects.all()
 
