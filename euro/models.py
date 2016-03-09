@@ -46,8 +46,10 @@ class Country(models.Model):
     def __unicode__(self):
         return self.name
 
+
 def get_image_path(instance, filename):
     return path.join(instance.path, filename)
+
 
 # описание монеки
 class Coins(models.Model):
