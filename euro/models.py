@@ -36,6 +36,7 @@ class CoinGroup(models.Model):
 # описание страны в которой находиться монетка
 class Country(models.Model):
     name = models.CharField(max_length=30)
+    flag = models.ImageField(upload_to='flags', verbose_name=u'Флаг страны', blank=True)  # где лежат флаги стран
     coin_group = models.ManyToManyField(CoinGroup, blank=True)
 
     class Meta:

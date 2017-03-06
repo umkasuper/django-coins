@@ -98,5 +98,9 @@
     {% endfor %}
 {% endfor %}
 
+    {% if request.user.is_authenticated %} 
+            <a href="{% url 'pdf_grouped_memorable' country=country type=coins.coins_group.0.coins_group_name %}">Скачать как pdf {{ country }}</a> 
+    {% endif %} 
+
 {% endblock %}
 

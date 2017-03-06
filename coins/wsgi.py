@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -16,7 +17,18 @@ framework.
 
 """
 import os
+import sys
 
+paths = [
+    '/Users/maksimkolesnikov/Developer/django-coins/coin',
+    '/Users/maksimkolesnikov/Developer/django-coins/euro',
+    '/Users/maksimkolesnikov/Developer/django-coins',
+    '/Library/Python/2.7/site-packages/',
+]
+
+for path in paths:
+    if path not in sys.path:
+        sys.path.append(path)
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "coins.settings")
 
 # This application object is used by any WSGI server configured to use this
