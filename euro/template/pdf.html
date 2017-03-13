@@ -1,0 +1,55 @@
+{% load user_coin %}
+
+<style>
+@font-face {
+    font-family: DejaMono;
+    src: url("/media/fonts/DejaVuLGCSansMono.ttf");
+}
+
+* {
+  /*font-size:10pt;*/
+  font-family: DejaMono;
+  line-height: 0.5em;
+  }
+</style>
+
+<div id="country"> {# div по странам #}
+    {% if year_filter %}
+    <p>
+        <font color="blue">
+        Год: {{ year_filter }}
+        </font>
+    </p>
+    {% endif %}
+    {% for place in country %}
+        {% for group in place.coins_group %}
+            {% for coin in group.coins_group %}
+                {% ifchanged %}
+                <p>
+                <font color="red">
+                    <strong>{{ place.country_name }}</strong> 
+                </font>
+                </p>
+                {% endifchanged %}
+                <p>
+                {% if request.user|user_have_coin:coin %}
+                [X] 
+                {% else %}
+                [ ] 
+                {% endif %}
+    
+                {% if year_filter %}
+                
+                {% else %}
+                {{ coin.year }} -
+                {% endif %}
+                
+                {% if coin.description %}
+                {{ coin.description }} 
+                {% endif %}
+                </p>
+            {% endfor %}
+        {% endfor %}
+    {% endfor %}
+</div> {# конец div по странам #}
+
