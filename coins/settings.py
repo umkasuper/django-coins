@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
 # Django settings for coins project.
 
+import os
+
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
+
+#TEMPLATE_DEBUG = DEBUG
+
+ALLOWED_HOSTS = ['*']
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -10,11 +15,14 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
 #        'NAME': '/home/maksim/Work/django-project/coins/coins/coins/coins.db',                      # Or path to database file if using sqlite3.
-        'NAME': '/Users/maksimkolesnikov/Developer/django-coins/coins/coins.db',
+#        'NAME': '/Users/maksimkolesnikov/Developer/django-coins/coins/coins.db',
+         'NAME': os.path.join(BASE_DIR, 'coins.db'),
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -48,7 +56,9 @@ USE_TZ = True
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
 #MEDIA_ROOT = '/home/maksim/Work/django-project/coins/coins/img'
-MEDIA_ROOT = '/Users/maksimkolesnikov/Developer/django-coins/media'
+#MEDIA_ROOT = '/Users/maksimkolesnikov/Developer/django-coins/media'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -86,11 +96,11 @@ STATICFILES_FINDERS = (
 SECRET_KEY = '_v4^aqfm#bo@aia4o(5+@fzm*7h)z3%_7)c%8z(7szggk_dbo1'
 
 # List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
-)
+#TEMPLATE_LOADERS = (
+#    'django.template.loaders.filesystem.Loader',
+#    'django.template.loaders.app_directories.Loader',
+##     'django.template.loaders.eggs.Loader',
+#)
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -103,20 +113,44 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-
-
 ROOT_URLCONF = 'coins.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'coins.wsgi.application'
 
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-#    '/home/maksim/Work/django-project/coins/coins/euro/template',
-     '/Users/maksimkolesnikov/Developer/django-coins/euro/template',
-)
+#TEMPLATE_DIRS = (
+#    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
+#    # Always use forward slashes, even on Windows.
+#    # Don't forget to use absolute paths, not relative paths.
+##    '/home/maksim/Work/django-project/coins/coins/euro/template',
+##     '/Users/maksimkolesnikov/Developer/django-coins/euro/template',
+#     os.path.join(BASE_DIR, 'euro/template/'),
+#)
+
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'euro/template')],
+#        'APP_DIRS': True,
+#        'DEBUG': 'DEBUG',
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+#                'admin_tools.template_loaders.Loader',
+             ],
+            'loaders': [
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+#                'admin_tools.template_loaders.Loader',
+            ],
+        },
+
+    },
+]
 
 INSTALLED_APPS = (
     'django.contrib.auth',

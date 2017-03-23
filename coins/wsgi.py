@@ -18,23 +18,33 @@ framework.
 """
 import os
 import sys
+import site
 
-paths = [
-    '/Users/maksimkolesnikov/Developer/django-coins/coin',
-    '/Users/maksimkolesnikov/Developer/django-coins/euro',
-    '/Users/maksimkolesnikov/Developer/django-coins',
-    '/Library/Python/2.7/site-packages/',
-]
+# Add the site-packages of the chosen virtualenv to work with
+site.addsitedir('/home/maksimkolesnikov/Developer/python/coins-env/lib/python3.5/site-packages')
 
-for path in paths:
-    if path not in sys.path:
-        sys.path.append(path)
+sys.path.append('/home/maksimkolesnikov/django-coins')
+
+#paths = [
+#    '/home/maksimkolesnikov/django-coins',
+#]
+#
+#for path in paths:
+#    if path not in sys.path:
+#        sys.path.append(path)
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "coins.settings")
+
+
+activate_env = os.path.expanduser("/home/maksimkolesnikov/Developer/python/coins-env/bin/activate_this.py")
+
+exec(compile(open(activate_env, "rb").read(), activate_env, 'exec'), dict(__file__=activate_env))
 
 # This application object is used by any WSGI server configured to use this
 # file. This includes Django's development server, if the WSGI_APPLICATION
 # setting points here.
 from django.core.wsgi import get_wsgi_application
+
 application = get_wsgi_application()
 
 # Apply WSGI middleware here.

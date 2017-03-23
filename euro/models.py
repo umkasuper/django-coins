@@ -19,12 +19,17 @@ class Nominal(models.Model):
     def __unicode__(self):
         return self.value
 
+    def __str__(self):
+        return self.value
 
 # группировка монеток по признакам
 class CoinGroup(models.Model):
     group_name = models.CharField(max_length=50)
 
     def __unicode__(self):
+        return self.group_name
+
+    def __str__(self):
         return self.group_name
 
     class Meta:
@@ -45,6 +50,9 @@ class Country(models.Model):
         ordering = ['name', ]
 
     def __unicode__(self):
+        return self.name
+
+    def __str__(self):
         return self.name
 
 
@@ -70,10 +78,16 @@ class Coins(models.Model):
         description += u' - %s' % unicode(self.description) if self.description else ''
         return description
 
+    def __str__(self):
+        description = u'%s - %s' % (self.country, self.nominal)
+        description += u' - %s' % self.description if self.description else ''
+        return description
+
     class Meta:
         verbose_name = u'Монеты'
         verbose_name_plural = verbose_name
         ordering = ['country', 'nominal']
+#        fields = '__all__'
 
     def save(self, *args, **kwargs):
         """

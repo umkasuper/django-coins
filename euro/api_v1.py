@@ -121,7 +121,7 @@ def api_v1_euro_save(request):
 
     if request.method == 'POST':
         jdata = json.loads(request.body)
-        print jdata['id'], jdata['have']
+        print(jdata['id'], jdata['have'])
 
         # получем id пользователя
         user = User.objects.filter(username=request.user.username)

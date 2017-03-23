@@ -12,9 +12,9 @@
     {% if country_descriptions %}
         <ul class="nav">
             {% if request.user.is_authenticated %}
-                <li><a href="/euro/?country=all">Регулярный чекан ({{ regular_user }}/{{ regular }})</a> </li>
+                <li><a href="{% url 'euro' 'all' %}">Регулярный чекан ({{ regular_user }}/{{ regular }})</a> </li>
             {% else %}
-                <li><a href="/euro/?country=all">Регулярный чекан ({{ regular }})</a> </li>
+                <li><a href="{% url 'euro' 'all' %}">Регулярный чекан ({{ regular }})</a> </li>
             {% endif %}
             
             <li><a id="all" href="{% url 'memorable' 'all' %}">Памятные евро 2€</a> </li>

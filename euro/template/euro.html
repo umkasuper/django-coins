@@ -11,14 +11,14 @@
 
     {% if country_descriptions %}
         <ul class="nav">
-            <li><a id="all" href="/euro/?country=all">Регулярный чекан</a> </li>
+            <li><a id="all" href="{% url 'euro' 'all' %}">Регулярный чекан</a> </li>
             <ul>
                 {% for description in country_descriptions %}
-                    <li><a id="{{ description.country_name }}" href="/euro/?country={{ description.country_name }}">{{ description.country_name }}</a>
+                    <li><a id="{{ description.country_name }}" href="{% url 'euro' country=description.country_name %}">{{ description.country_name }}</a>
                     {% if description.coins_group %}
                         <ul>
                             {% for group_description in description.coins_group %}
-                                <li><a id="{% get_id_name description.country_name group_description.coins_group_name %}" href="/euro/?country={{ description.country_name }}&type={{ group_description.coins_group_name }}">{{ group_description.coins_group_name }}</a></li>
+                                <li><a id="{% get_id_name description.country_name group_description.coins_group_name %}" href="{% url 'regular_year' country=description.country_name year=group_description.coins_group_name %}">{{ group_description.coins_group_name }}</a></li>
                             {% endfor %}
                         </ul>
 
@@ -29,11 +29,11 @@
                 {% endfor %}
             </ul>
             {% if request.user.is_authenticated %}
-                <li><a href="/euro/memorable/all">Памятные евро 2€ ({{ memorable_user }}/{{ memorable }})</a> </li>
+                <li><a href="{% url 'memorable' 'all' %}">Памятные евро 2€ ({{ memorable_user }}/{{ memorable }})</a> </li>
             {% else %}
-                <li><a href="/euro/memorable/all">Памятные евро 2€ ({{ memorable }})</a> </li>
+                <li><a href="{% url 'memorable' 'all' %}">Памятные евро 2€ ({{ memorable }})</a> </li>
             {% endif %}
-            
+
         </ul>
     {% endif %}
 
@@ -109,7 +109,9 @@
                         {% if forloop.counter0|divisibleby:"4" %}<div id="line">{% endif %}
                             {# если пользователь авторизован, то будем ему позволять наблюдать за монетами  #}
                             <div class="empty_row"> {# div в который все вставлено #}
-                                {%  user_coins_info request coin country.country_name group.coins_group_name %}
+                                {% autoescape off %}
+                                {% user_coins_info request coin country.country_name group.coins_group_name %}
+                                {% endautoescape %}
                                     <div class=nominal2> {{ coin.nominal }} </div>
 
                                     {# вешаем обработчик клика на checkboxе #}

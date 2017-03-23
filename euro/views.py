@@ -14,11 +14,15 @@ import os
 import copy
 from datetime import datetime
 from django.conf import settings
-from StringIO import StringIO
+
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 class UnsupportedMediaPathException(Exception):
     pass
-    
+
 def fetch_resources(uri, rel):
     """
     Callback to allow xhtml2pdf/reportlab to retrieve Images,Stylesheets, etc.
@@ -36,7 +40,7 @@ def fetch_resources(uri, rel):
         if not os.path.isfile(path):
             raise UnsupportedMediaPathException('Media urls must start with %s or %s' % (settings.MEDIA_ROOT, settings.STATIC_ROOT))
 
-    print path
+#    print(path)
     return path
 
 def as_pdf(request, country, year, param):
@@ -200,13 +204,20 @@ def memorable(request, country, selectors, year=None, pdf=None):
 """
 
 
-def euro(request):
-    if 'country' in request.GET:
+def euro(request, country = 'all', year = None):
+#    if 'country' in request.GET:
+#
+#        if request.GET['country'] == "all":
+#            request_country_list = Country.objects.filter(coin_group__group_name__in=['euro', 'normal']).distinct().values_list('name', flat=True) #Country.objects.all().values_list('name', flat=True)
+#        else:
+#            request_country_list = request.GET['country'].split(",")
 
-        if request.GET['country'] == "all":
+    if country:
+        if country == "all":
             request_country_list = Country.objects.filter(coin_group__group_name__in=['euro', 'normal']).distinct().values_list('name', flat=True) #Country.objects.all().values_list('name', flat=True)
         else:
-            request_country_list = request.GET['country'].split(",")
+            request_country_list = country.split(",")
+
         grouped_country = []
 
         # список всех стран, вместе с типами монет
@@ -245,9 +256,10 @@ def euro(request):
             coins_of_country = Coins.objects.filter(country__name=request_country)
 
             if coins_of_country:
-                if 'type' in request.GET:
+#                if 'type' in request.GET:
+                if year:
                     type_of_coins = Country.objects.filter(name=request_country)[0].coin_group.all(). \
-                        filter(group_name=request.GET['type'])
+                        filter(group_name=year)
                 else:
                     type_of_coins = Country.objects.filter(name=request_country)[0].coin_group.all(). \
                         exclude(group_name__in=['euro', 'normal', 'memorable'])

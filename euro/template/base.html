@@ -147,7 +147,7 @@
     </header>
 
     <nav id="navigation">
-        <a href="/euro/?country=all">Евро союз</a>
+        <a href="{% url 'euro' 'all' %}">Евро союз</a>
         <a href="{% url 'country_memorable' country='Россия' type='empty' %}">Россия</a>
         <a href="{% url 'country_memorable' country='США' type='empty' %}">США</a>
     </nav>

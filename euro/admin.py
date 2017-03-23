@@ -25,15 +25,17 @@ class CoinsForm(forms.ModelForm):
 #    country = forms.ModelChoiceField(queryset=Country.objects.all(), widget=forms.Select(), label=u"Страны")
     country = forms.ModelChoiceField(queryset=Country.objects.all(), widget=CountrySelector(), label=u"Страны")
 
-    coin_group = forms.ModelMultipleChoiceField(queryset=CoinGroup.objects.all(),
-                                                widget=widgets.FilteredSelectMultiple(u'Группы', False),
-                                                label=Coins._meta.get_field_by_name('coin_group')[0].verbose_name)
+#!!!!!!!!!!!!!!!!!!
+#    coin_group = forms.ModelMultipleChoiceField(queryset=CoinGroup.objects.all(),
+#                                                widget=widgets.FilteredSelectMultiple(u'Группы', False),
+#                                                label=Coins._meta.get_field_by_name('coin_group')[0].verbose_name)
 
     class Meta:
         model = Coins
+        fields = '__all__'
 
     def __init__(self, *args, **kwargs):
-        print "Error __init__ 1"
+        print("Error __init__ 1")
         try:
             coin = kwargs['instance']
         except:
@@ -43,10 +45,10 @@ class CoinsForm(forms.ModelForm):
         super(CoinsForm, self).__init__(*args, **kwargs)
 
         try:
-            print "Error __init__ 2"
+            print("Error __init__ 2")
             self.fields['coin_group'].queryset = Country.objects.filter(name=unicode(coin.country))[0].coin_group.all()
         except:
-            print "Error __init__ 3"
+            print("Error __init__ 3")
             self.fields['coin_group'].queryset = CoinGroup.objects.all()
 
 
