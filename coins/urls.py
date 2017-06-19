@@ -38,7 +38,7 @@ urlpatterns = [
     url(r'^euro/memorable/(?P<country>\S+)$', memorable, {'selectors': ["euro", "memorable"]}, name='memorable'),
     #url(u'^(?P<country>\S+)/memorable/(?P<type>\S+)/$', usa, {'selectors': ['memorable']}, name='country_memorable'),
     url(u'^(?P<country>\S+)/memorable/(?P<type>[-\w\ ]+)/$', all_memorable, {'selectors': ['memorable']}, name='country_memorable'),
-    url(r'^set/$', set_coins),
+    url(r'^set/$', set_coins, name='set_coins'),
 
     url(r'^api/v1/euro/list_countries', api_v1_euro_list_countries),
     url(r'^api/v1/euro/list_years', api_v1_euro_list_years),

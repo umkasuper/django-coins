@@ -102,7 +102,7 @@
 
         $.ajax({
             type: "POST",
-            url: "/set/",
+            url: "{% url 'set_coins' %}",
             data: {id: id[0], operation: (id[3] == 'absent') ? "remove" : "add"}
         }).done(function( msg ) {
                 if (msg == "ok")
@@ -134,13 +134,13 @@
 
     <header id="header">
         <div style="float: right;">
-            <a href="/accounts/logout/">Выход</a>
+            <a href="{% url 'logout' %}">Выход</a>
         </div>
         <div>
         {% if request.user.is_authenticated %}
            Привет пользователь {{ request.user.username }}
         {% else %}
-            <a href="/accounts/login/">Вход</a>
+            <a href="{% url 'login' %}">Вход</a>
         {% endif %}
         </div>
 
